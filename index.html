@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&family=Poppins:wght@200;300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script type="text/javascript" src="script.js" defer></script>
+    <title>Analog Clock</title>
+  </head>
+  <body>
+    <header class="header">
+      <!-- Todo: the why to properly adjust closing a modal -->
+      <!-- https://www.youtube.com/watch?v=nZ05Oqccq6g -->
+      <nav>
+        <div class="logo">
+          <h4>Esteban's Clock</h4>
+        </div>
+        <div class="score-board">
+          <div>Total Score</div>
+          <div id="totalScore">0</div>
+        </div>
+        <div class="timer">
+          <div>Time Left</div>
+          <div class="time-left"></div>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Work</a></li>
+          <li><a href="#">Project</a></li>
+        </ul>
+        <div class="burger">
+          <div class="line1"></div>
+          <div class="line2"></div>
+          <div class="line3"></div>
+        </div>
+      </nav>
+      <!-- *to click outside nav to close -->
+      <!-- "javascrip: (function(){nav.classList.toggle('nav-active');})()" -->
+    </header>
+    <div class="clock-container">
+      <div class="clock">
+        <div class="wrapper">
+          <div class="bar-seconds"></div>
+          <div class="number-hours"></div>
+          <!-- <div class="hands-box"> -->
+          <div class="hand hours"></div>
+          <div class="hand minutes"></div>
+          <div class="hand seconds"></div>
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="input-container">
+      <!-- <div>
+      </div> -->
+      <div class="dClock">
+        <div class="dDisplay"></div>
+      </div>
+
+      <div class="range-container">
+        <div class="slider-wrapper">
+          <input
+            class="slider"
+            id="hRange"
+            type="range"
+            min="1"
+            max="12"
+            data-time="hour"
+          />
+          <!-- oninput="hValue.innerText = this.value" -->
+          <!-- <span class="value" id="hValue">0</span> -->
+          <div class="range-label" id="hour">Hours</div>
+        </div>
+
+        <div class="slider-wrapper">
+          <input
+            class="slider"
+            id="mRange"
+            type="range"
+            min="0"
+            max="59"
+            data-time="minute"
+          />
+          <!-- oninput="mValue.innerText = this.value" -->
+          <!-- <span class="value" id="mValue">0</span> -->
+          <div class="range-label" id="minute">Minutes</div>
+        </div>
+
+        <div class="slider-wrapper">
+          <input
+            class="slider"
+            id="sRange"
+            type="range"
+            min="0"
+            max="59"
+            data-time="second"
+          />
+          <!-- oninput="sValue.innerText = this.value" -->
+          <!-- <span class="value" id="sValue">0</span> -->
+          <div class="range-label" id="second">Seconds</div>
+        </div>
+      </div>
+      <div class="buttons">
+        <button class="start-btn startGame" onclick="startGame()">Start</button>
+        <button class="start-btn cancelGame" onclick="cancelTimeGame()">
+          Cancel
+        </button>
+        <button class="start-btn spinClock" onclick="movehand()">Spin</button>
+        <button class="start-btn verifyScore" onclick="checkValues()">
+          Verify
+        </button>
+      </div>
+
+      <!-- <div>
+      </div> -->
+    </div>
+  </body>
+</html>
+
+<!-- ** to format digital clock -->
+<!-- https://www.codingnepalweb.com/digital-clock-using-javascript-2/ -->
+
+<!-- *** for slid in menu -->
+<!-- https://www.youtube.com/watch?v=HbBMp6yUXO0 -->
+<!-- this bottom one is from DevEd -->
+<!-- https://www.youtube.com/watch?v=gXkqy0b4M5g -->
+
+<!-- *** Grid layout hints with gird area template and media queries -->
+<!-- https://www.youtube.com/watch?v=2QcdIThvV8E -->
+<!-- https://www.youtube.com/watch?v=K24lUqcT0Ms -->
+
+<!-- this below is for overlapping idea with grid template area -->
+<!-- https://www.youtube.com/watch?v=CVKbe4RaUZQ -->
+
+<!-- For the Modal - maybe for new user form -->
+<!-- https://www.youtube.com/watch?v=W9K9r0Z-8_c -->
+
+<!--**** Number Range Slider ****-->
+
+<!-- https://www.youtube.com/watch?v=jeEmokjRHyI&t=622s -->
+
+<!-- https://www.youtube.com/watch?v=BptyINqQURk -->
+
+<!-- https://blog.logrocket.com/creating-custom-css-range-slider-javascript-upgrades/ -->
+
+<!-- https://codepen.io/jkantner/pen/yLYZwjY -->
+
+<!-- https://codepen.io/mayuMPH/pen/ZjxGEY -->
+
+<!-- https://codepen.io/jh3y/pen/xxvVWxN -->
+
+<!-- https://www.google.com/search?q=html+number+picker+carousel&sca_esv=a181e7b5fc982397&sca_upv=1&sxsrf=ADLYWIIJAVenLIj8yykPPMBkPfrBePQJCQ%3A1726691634439&ei=MjnrZtnJGsrjkPIPjJ7g-Ao&ved=0ahUKEwjZqofMq82IAxXKMUQIHQwPGK8Q4dUDCA8&uact=5&oq=html+number+picker+carousel&gs_lp=Egxnd3Mtd2l6LXNlcnAiG2h0bWwgbnVtYmVyIHBpY2tlciBjYXJvdXNlbDIFECEYoAEyBRAhGKABMgUQIRigATIFECEYoAEyBRAhGKABSPJdUN4CWNJacAV4AZABAJgBhQGgAZkJqgEEMTEuMrgBA8gBAPgBAZgCEqACjwrCAgoQABiwAxjWBBhHwgIGEAAYFhgewgIFECEYnwXCAgcQIRigARgKwgIEECEYCpgDAIgGAZAGCJIHBDE0LjSgB4w6&sclient=gws-wiz-serp -->
+
+<!-- https://blog.hubspot.com/website/html-slider -->
+
+<!-- https://stackoverflow.com/questions/10004723/html5-input-type-range-show-range-value -->
+
+<!-- **** Wrapping Div -->
+<!-- https://www.youtube.com/watch?v=MdeCwwgAxHU -->
+<!-- ?this below is great for the layout using grid -->
+<!-- https://www.youtube.com/watch?v=EiNiSFIPIQE -->
+
+<!-- CodeArry -->
+<!-- Codehal -->
+<!-- https://barker.codes/blog/building-an-analog-clock-in-vanilla-js/ -->
+<!-- https://dev.to/code_mystery/simple-analog-clock-using-html-css-javascript-2c6a -->
+
+<!-- RESOPONSIVE Code -->
+<!-- https://www.geeksforgeeks.org/responsive-analog-clock-using-html-css-and-vanilla-javascript/ -->
+<!-- https://ide.geeksforgeeks.org/ide/online-html-editor?id=0f7b60b4-bcfa-4f36-b292-e527f10144d9 -->
+<!-- https://codepen.io/peterhanus/pen/PWYqdQ -->
+
+<!-- https://front-end-fu.com/2014/04/07/responsive-analog-clock-with-css3-and-javascript/ -->
+
+<!-- https://www.youtube.com/watch?v=H4-lcB3dr-Q -->
+
+<!-- JS Spinner -->
+
+<!-- https://stackoverflow.com/questions/76792127/how-to-slow-down-rotation-when-the-rotation-at-the-end-like-a-wheel-of-fortune -->
+
+<!-- 
+
+
+-->
+<!-- https://codepen.io/maeh2k/pen/xdEOVZ -->
+<!-- https://stackoverflow.com/questions/76792127/how-to-slow-down-rotation-when-the-rotation-at-the-end-like-a-wheel-of-fortune -->
+<!-- https://stackoverflow.com/questions/74523559/how-would-you-write-a-javascript-function-that-slowly-declerates-a-spin-wheel-to -->
+<!-- https://jsfiddle.net/Bijingus/pzuhtren/142/ -->
+<!-- https://stackoverflow.com/questions/35651996/ease-on-spinning-wheel -->
+<!-- https://stackoverflow.com/questions/35651996/ease-on-spinning-wheel -->
+<!-- https://codepen.io/harshh9/pen/wvXGXvV -->
+<!-- https://www.kirupa.com/html5/introduction_to_easing_in_javascript.htm -->

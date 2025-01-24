@@ -1,0 +1,619 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; */
+  font-family: "Inter", "Poppins", serif;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100svh;
+  /* to center everything in body */
+  /* position: absolute; */
+  /* https://stackoverflow.com/questions/57141778/css-to-center-entire-relative-body-horizontally-without-wrapper-or-scrollbars */
+  /* left: 50%;
+  transform: translate(-50%);
+  margin: 0; */
+  overflow-x: hidden;
+  /* to here for centering in body */
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  display: grid;
+  place-items: center;
+  grid-template-areas:
+    "header"
+    "clock-container"
+    "input-container";
+  grid-template-columns: 1fr;
+  grid-template-rows: 100px auto auto;
+  background: #eef0f5;
+}
+
+.header {
+  width: 100%;
+  /* display: flex; */
+  grid-area: header;
+  /* align-items: center; */
+  /* justify-content: space-between; */
+}
+
+/* ! Kevin Powel version */
+/* .mobile-nav-toggle {
+  display: none;
+} */
+
+/* .flex {
+  display: flex;
+  gap: var(--gap, 1rem);
+} */
+
+/* .logo {
+  margin: 2rem;
+  border: 2px solid #c37272;
+  width: 50px;
+  height: 50px;
+} */
+
+.primary-navigation {
+  z-index: 99;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.primary-navigation a {
+  text-decoration: none;
+}
+
+.primary-navigation a > span {
+  font-weight: 700;
+  margin-inline-end: 0.75em; /* this separates the span from rest of div*/
+}
+
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  top: auto;
+  overflow: hidden;
+}
+
+@media (max-width: 35em) {
+  .primary-navigation {
+    gap: 2em;
+    position: fixed;
+    inset: 0 0 0 30%;
+
+    flex-direction: column;
+    padding: min(30vh, 10rem) 2rem;
+
+    /* move this to the one without @media if you decide to have it on all the screen sizes */
+    background: hsl(0 0% 0% / 0.65);
+    /* background: hsla(0, 15%, 6%, 0.1);
+    backdrop-filter: blur(0.3rem); */
+
+    transform: translateX(100%);
+    transition: transform 350ms ease-out;
+  }
+
+  .primary-navigation[data-visible="true"] {
+    transform: translateX(0%);
+  }
+
+  /* .mobile-nav-toggle {
+    position: absolute;
+    display: block;
+    z-index: 999;
+    background: url();
+    width: 1rem;
+    aspect-ratio: 1;
+    top: 2rem;
+    right: 2rem;
+  } */
+
+  /** this below is when browser supports certain css like "backdrop-filter: blur()". If not, defaults to the one above */
+  @supports (backdrop-filter: blur(0.3rem)) {
+    /* move this to the one without @media if you decide to have it on all the screen sizes */
+    .primary-navigation {
+      background: hsla(0, 15%, 6%, 0.1);
+      backdrop-filter: blur(0.3rem);
+    }
+  }
+}
+
+/* ! Kevin Powel version END */
+
+/* ! DevEd version Start */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 8vh;
+  /* background-color: #5d4954; */
+  background: hsl(0 0% 0% / 0.65);
+}
+
+.logo {
+  color: rgb(226, 226, 226);
+  margin-left: 10px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  font-size: 20px;
+}
+
+@media (max-width: 55em) {
+  .logo h4 {
+    max-width: 120px;
+    font-size: 1rem;
+    text-transform: none;
+    text-align: center;
+  }
+}
+
+.score-board {
+  font-size: 1rem;
+  color: rgb(226, 226, 226);
+  justify-items: center;
+  align-content: center;
+  font-weight: 600;
+}
+
+.nav-links {
+  display: flex;
+  justify-content: space-around;
+  width: 30%;
+}
+.nav-links li {
+  list-style: none;
+}
+.nav-links a {
+  color: rgb(226, 226, 226);
+  text-decoration: none;
+  letter-spacing: 3px;
+  /* font-weight: bold; */
+  font-size: 14px;
+}
+
+.burger div {
+  width: 25px;
+  height: 3px;
+  background-color: rgb(226, 226, 226);
+  margin: 5px;
+  transition: all 0.3s ease;
+}
+.burger {
+  margin-right: 10px;
+  display: none;
+  cursor: pointer;
+}
+/* .overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: none;
+}
+.overlayNav {
+  display: block;
+} */
+
+@media screen and (max-width: 1024px) {
+  .nav-links {
+    width: 40%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    overflow-x: hidden; /* this is so you can't scroll to the right because translateX(100%) places the nav-links to the right and is hidden untill clicking button*/
+  }
+  .nav-links {
+    position: absolute;
+    z-index: 999;
+    right: 0px;
+    height: 92vh;
+    top: 8vh;
+    background: hsl(0 0% 0% / 0.65);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    transform: translateX(100%);
+    /* https://easingwizard.com/ */
+    transition: transform 0.75s
+      linear(
+        0,
+        1 44.7%,
+        0.898 51.8%,
+        0.874 55.1%,
+        0.866 58.4%,
+        0.888 64.3%,
+        1 77.4%,
+        0.98 84.5%,
+        1
+      );
+  }
+  .nav-links li {
+    opacity: 0; /* this is to fade in the names of the links to full opacitiy when sliding in*/
+  }
+  .burger {
+    display: block;
+  }
+  @supports (backdrop-filter: blur(0.3rem)) {
+    /* move this to the one without @media if you decide to have it on all the screen sizes */
+    .nav-links {
+      background: hsla(0, 15%, 6%, 0.1);
+      backdrop-filter: blur(0.3rem);
+    }
+    .nav-links a {
+      color: #2d333e;
+    }
+  }
+}
+
+.nav-active {
+  /* when this toggled in nav-links class, nav pops back in from -100% */
+  transform: translateX(0%);
+}
+
+@keyframes navLinkFade {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+
+.toggle .line1 {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+.toggle .line2 {
+  opacity: 0;
+}
+.toggle .line3 {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+/* ! DevEd version END */
+
+/* 
+justify-* is row axis or inline axis
+align-* is column axis or block axis
+*/
+
+.input-container {
+  grid-area: input-container;
+  display: grid;
+  border: 3px dashed red;
+  grid-template-rows: 1fr 150px 1fr;
+  /* grid-template-columns: 1fr; */
+  gap: 5px;
+
+  width: 100%;
+  height: 100%;
+
+  justify-items: center; /* centers elemnts inside along row or x axis*/
+  align-items: center; /* centers elemnts inside along column or y axis*/
+}
+
+.dClock {
+  /* background: rgb(226, 226, 226); */
+  box-shadow: 5px 5px 5px rgba(51, 63, 91, 0.5);
+  /* , -5px -5px 5px #fff; */
+  height: 50px;
+  width: 350px;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 10px;
+}
+.dDisplay {
+  font-size: 25px;
+  font-family: "Orbitron";
+  letter-spacing: 5px;
+}
+
+.dDisplay span {
+  font-family: "Orbitron";
+  display: inline-block; /*to maintain same width when numbers change*/
+  width: 52px;
+  font-weight: 400;
+  /* margin: 0px 0; */
+  transition: background-color 0.25s ease-in-out;
+}
+rt {
+  font-size: 0.5rem;
+  margin: 0 5px;
+}
+
+.idErrorBackground {
+  background-color: #ffff99;
+  border-radius: 50%;
+}
+
+.range-container {
+  display: grid;
+  grid-template-columns: 350px;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 10px;
+  /* justify-items: center; */
+  align-self: stretch;
+  align-content: space-around;
+  /* margin: 15px auto; */
+
+  /* grid-template-rows: auto; */
+}
+
+.slider-wrapper {
+  /* position: relative; */
+  /* margin: 1rem; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  box-shadow: 10px 8px 10px rgba(51, 63, 91, 0.5), -5px -5px 5px #fff;
+  /* , -15px -15px 20px #fff */
+  /* rgba(0, 0, 0, 0.4) */
+
+  border-radius: 50px;
+  margin-bottom: 13px;
+}
+
+.slider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 250px;
+  height: 20px;
+  background-color: white;
+  box-shadow: inset 2px 2px 10px rgba(0, 0, 0, 0.4);
+  border-radius: 25px;
+  outline: none;
+  transition: 0.4s ease-in-out;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  /* background: radial-gradient(#e6e9ef, #d6d8dc); */
+  background: linear-gradient(#b8b8b8, whitesmoke) padding-box,
+    linear-gradient(#fbfbfb, #b0b0b0) border-box;
+  border: solid 0.375em transparent;
+  /* cursor: pointer; */
+  cursor: ew-resize;
+  /* ! transitions for ::webkit-slider-thumb not supported yet */
+}
+.slider::-webkit-slider-thumb:hover,
+.slider::-webkit-slider-thumb:active {
+  background: linear-gradient(#c67676, whitesmoke) padding-box,
+    linear-gradient(#fd9090, #c37272) border-box;
+}
+
+.slider::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  /* background: radial-gradient(#e6e9ef, #d6d8dc); */
+  background: linear-gradient(#b8b8b8, whitesmoke) padding-box,
+    linear-gradient(#fbfbfb, #b0b0b0) border-box;
+  border: solid 0.375em transparent;
+  /* cursor: pointer; */
+  cursor: ew-resize;
+  transition: background 2s;
+}
+
+.slider::-moz-range-thumb:hover,
+.slider::-moz-range-thumb:active {
+  background: linear-gradient(#c67676, whitesmoke) padding-box,
+    linear-gradient(#fd9090, #c37272) border-box;
+}
+
+.slider:hover {
+  box-shadow: inset 4px 4px 12px rgba(2, 196, 53, 0.522);
+  cursor: pointer;
+}
+
+.slider-wrapper span {
+  /* position: absolute;
+  bottom: 50%;
+  transform: translateY(30%); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  font-size: 1.5rem;
+  width: 26px;
+}
+
+.range-label {
+  margin-bottom: 3px;
+  margin-right: 5px;
+  font-size: 1.2rem;
+}
+#hour,
+.dHour {
+  color: #2d333e;
+}
+#minute,
+.dMinute {
+  color: #646e82;
+}
+#second,
+.dSecond {
+  color: #fd382d;
+}
+
+.clock-container {
+}
+
+.clock {
+  grid-area: clock;
+  background: linear-gradient(120deg, #e6e9ef, #eef0f5);
+  /* width: 450px;
+  height: 450px; */
+  width: 375px;
+  height: 375px;
+  border-radius: 50%;
+  box-shadow: -20px -20px 60px rgba(255, 255, 255, 0.5),
+    20px 20px 20px -5px rgba(166, 180, 200, 0.5);
+  display: flex;
+  /* place-self: center; */
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  /* border: 4px solid red; */
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.wrapper {
+  /* width: 390px;
+  height: 390px; */
+  width: 330px;
+  height: 330px;
+  background: linear-gradient(to top, #eceef3, #f1f2f7);
+  border-radius: 50%;
+  box-shadow: inset 10px 10px 10px rgba(166, 180, 200, 0.5),
+    inset 10px 20px 40px rgba(166, 180, 200, 0.7);
+  display: flex; /*this not needed for numbers/ticks but will be for handles*/
+  align-items: center;
+  justify-content: center;
+  /* border: 4px solid purple; */
+}
+
+.number-hours span {
+  position: absolute;
+  transform: rotate(calc(var(--index) * (360deg / 12)));
+  inset: 55px; /*if this removed numbers centered because of the display flex and centered properties. Without display flex in .wrapper and this removed, they would be placed in top left corner of the position relative element*/
+  text-align: center;
+}
+
+.number-hours span p {
+  font-size: 1.4rem;
+  transform: rotate(calc(var(--index) * (-360deg / 12)));
+}
+
+.bar-seconds span {
+  position: absolute;
+  transform: rotate(calc(var(--index) * (360deg / 60)));
+  inset: 35px;
+  text-align: center;
+}
+
+.bar-seconds span p {
+  display: inline-block;
+  width: 2px;
+  height: 4px;
+  background: #646e8260;
+  border-radius: 2px;
+  box-shadow: 0 0 10px #646e8260;
+}
+
+.bar-seconds span:nth-child(5n) p {
+  background: red;
+  transform: translateY(-2px);
+  height: 6px;
+  width: 3px;
+  box-shadow: 0 0 10px red;
+}
+
+/* HANDS */
+.hands-box {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: red;
+}
+
+.hand {
+  position: absolute;
+  bottom: 50%;
+  transform-origin: bottom;
+}
+
+.hours {
+  width: 6px;
+  height: 20%;
+  background: #2d333e;
+  box-shadow: 1px 1px 10px #2d333e60;
+  transform: rotate(15deg);
+  border-radius: 25% 25% 0% 0%;
+}
+
+.minutes {
+  width: 5px;
+  height: 30%;
+  background: #646e82;
+  transform: rotate(180deg);
+  box-shadow: 1px 1px 10px #646e8260;
+  border-radius: 25% 25% 0% 0%;
+}
+
+.minutes::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  /* left: 50%; */
+  /* transform: translate(-5px, -7.5px); */
+  transform: translate(-5px, -50%);
+
+  width: 15px;
+  height: 15px;
+  background: #fd382d;
+  border-radius: 50%;
+  box-shadow: 1 1 5px #fd382d60;
+}
+
+.seconds {
+  width: 4px;
+  height: 34%;
+  background: #fd382d;
+  box-shadow: 1px 1px 3px #fd382d60;
+  transform: rotate(108deg);
+  border-radius: 25% 25% 0% 0%;
+}
+/* .seconds::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 15%;
+  background: #fd382d;
+  bottom: -15%;
+  box-shadow: 1px 1px 3px #fd382d60;
+} */
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+.start-btn {
+  width: 80px;
+  height: 40px;
+  /* position: absolute;
+  bottom: 0;
+  margin-bottom: 10px; */
+}
+
+/* 
+https://www.freecodecamp.org/news/taking-the-right-approach-to-responsive-web-design/
+https://www.freecodecamp.org/news/responsive-web-design-modern-website-code-for-beginners/
+https://www.freecodecamp.org/news/breakpoints-for-responsive-web-design/
+
+*/
