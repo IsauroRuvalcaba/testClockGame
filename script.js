@@ -10,9 +10,6 @@ const btnVerifyScore = document.querySelector(".verifyScore");
 const totalScore = document.getElementById("totalScore");
 let dClock = document.querySelector(".dDisplay");
 
-// const primaryNav = document.querySelector(".primary-navigation");
-// const navToggle = document.querySelector(".mobile-nav-toggle");
-
 // btnSpinClock.disabled = true;
 btnVerifyScore.disabled = true;
 
@@ -142,6 +139,7 @@ function countDown() {
 const cancelTimeGame = () => {
   console.log("cancel btn pressed");
   btnStartGame.disabled = false;
+  btnVerifyScore.disabled = true;
   clearInterval(timeLeftCountDown);
 };
 
@@ -226,20 +224,6 @@ sliders.forEach((slider, index) => {
 
 //* slider end
 
-// ! navigation -- Kevin Powell version
-// navToggle.addEventListener("click", () => {
-//   const visibility = primaryNav.getAttribute("data-visible");
-
-//   if (visibility === "false") {
-//     primaryNav.setAttribute("data-visible", "true");
-//     navToggle.setAttribute("aria-expanded", true);
-//   } else if (visibility === "true") {
-//     primaryNav.setAttribute("data-visible", "false");
-//     navToggle.setAttribute("aria-expanded", false);
-//   }
-// });
-// ! navigation END -- Kevin Powell
-
 const overlay = document.querySelector(".overlay");
 const overlayCloseNav = () => {
   console.log("Clicked Overlay");
@@ -253,14 +237,11 @@ const navSlide = () => {
   const navLinks = document.querySelectorAll(".nav-links li");
   const nav = document.querySelector(".nav-links");
   const burger = document.querySelector(".burger");
-
   // TODO: to have navbar close when clicking outside of it https://youtu.be/m7YDWNz65iI?t=492
-
   //Toggle nav
   burger.addEventListener("click", () => {
     nav.classList.toggle("nav-active");
     // overlay.classList.toggle("overlayNav");
-
     //Animate links
     navLinks.forEach((link, index) => {
       if (link.style.animation) {
@@ -271,7 +252,6 @@ const navSlide = () => {
         }s`;
       }
     });
-
     //Burger animation
     burger.classList.toggle("toggle");
   });

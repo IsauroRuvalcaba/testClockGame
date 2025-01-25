@@ -9,6 +9,14 @@
   font-family: "Inter", "Poppins", serif;
 }
 
+body,
+html {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
 body {
   width: 100%;
   min-height: 100vh;
@@ -20,7 +28,6 @@ body {
   /* left: 50%;
   transform: translate(-50%);
   margin: 0; */
-  overflow-x: hidden;
   /* to here for centering in body */
   /* display: flex;
   align-items: center;
@@ -34,6 +41,7 @@ body {
   grid-template-columns: 1fr;
   grid-template-rows: 100px auto auto;
   background: #eef0f5;
+  overflow: hidden;
 }
 
 .header {
@@ -42,103 +50,16 @@ body {
   grid-area: header;
   /* align-items: center; */
   /* justify-content: space-between; */
-}
-
-/* ! Kevin Powel version */
-/* .mobile-nav-toggle {
-  display: none;
-} */
-
-/* .flex {
-  display: flex;
-  gap: var(--gap, 1rem);
-} */
-
-/* .logo {
-  margin: 2rem;
-  border: 2px solid #c37272;
-  width: 50px;
-  height: 50px;
-} */
-
-.primary-navigation {
-  z-index: 99;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.primary-navigation a {
-  text-decoration: none;
-}
-
-.primary-navigation a > span {
-  font-weight: 700;
-  margin-inline-end: 0.75em; /* this separates the span from rest of div*/
-}
-
-.sr-only {
-  position: absolute;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  top: auto;
   overflow: hidden;
 }
-
-@media (max-width: 35em) {
-  .primary-navigation {
-    gap: 2em;
-    position: fixed;
-    inset: 0 0 0 30%;
-
-    flex-direction: column;
-    padding: min(30vh, 10rem) 2rem;
-
-    /* move this to the one without @media if you decide to have it on all the screen sizes */
-    background: hsl(0 0% 0% / 0.65);
-    /* background: hsla(0, 15%, 6%, 0.1);
-    backdrop-filter: blur(0.3rem); */
-
-    transform: translateX(100%);
-    transition: transform 350ms ease-out;
-  }
-
-  .primary-navigation[data-visible="true"] {
-    transform: translateX(0%);
-  }
-
-  /* .mobile-nav-toggle {
-    position: absolute;
-    display: block;
-    z-index: 999;
-    background: url();
-    width: 1rem;
-    aspect-ratio: 1;
-    top: 2rem;
-    right: 2rem;
-  } */
-
-  /** this below is when browser supports certain css like "backdrop-filter: blur()". If not, defaults to the one above */
-  @supports (backdrop-filter: blur(0.3rem)) {
-    /* move this to the one without @media if you decide to have it on all the screen sizes */
-    .primary-navigation {
-      background: hsla(0, 15%, 6%, 0.1);
-      backdrop-filter: blur(0.3rem);
-    }
-  }
-}
-
-/* ! Kevin Powel version END */
 
 /* ! DevEd version Start */
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 8vh;
-  /* background-color: #5d4954; */
   background: hsl(0 0% 0% / 0.65);
+  overflow: hidden;
 }
 
 .logo {
@@ -170,6 +91,7 @@ nav {
   display: flex;
   justify-content: space-around;
   width: 30%;
+  overflow: hidden;
 }
 .nav-links li {
   list-style: none;
@@ -178,7 +100,6 @@ nav {
   color: rgb(226, 226, 226);
   text-decoration: none;
   letter-spacing: 3px;
-  /* font-weight: bold; */
   font-size: 14px;
 }
 
@@ -194,16 +115,6 @@ nav {
   display: none;
   cursor: pointer;
 }
-/* .overlay {
-  background: rgba(0, 0, 0, 0.5);
-  position: fixed;
-  inset: 0;
-  z-index: 99;
-  display: none;
-}
-.overlayNav {
-  display: block;
-} */
 
 @media screen and (max-width: 1024px) {
   .nav-links {
@@ -212,9 +123,14 @@ nav {
 }
 
 @media screen and (max-width: 768px) {
-  body {
-    overflow-x: hidden; /* this is so you can't scroll to the right because translateX(100%) places the nav-links to the right and is hidden untill clicking button*/
+  body,
+  html {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
   }
+
   .nav-links {
     position: absolute;
     z-index: 999;
@@ -227,7 +143,6 @@ nav {
     align-items: center;
     width: 50%;
     transform: translateX(100%);
-    /* https://easingwizard.com/ */
     transition: transform 0.75s
       linear(
         0,
@@ -240,15 +155,15 @@ nav {
         0.98 84.5%,
         1
       );
+    overflow: hidden;
   }
   .nav-links li {
-    opacity: 0; /* this is to fade in the names of the links to full opacitiy when sliding in*/
+    opacity: 0;
   }
   .burger {
     display: block;
   }
   @supports (backdrop-filter: blur(0.3rem)) {
-    /* move this to the one without @media if you decide to have it on all the screen sizes */
     .nav-links {
       background: hsla(0, 15%, 6%, 0.1);
       backdrop-filter: blur(0.3rem);
@@ -260,7 +175,6 @@ nav {
 }
 
 .nav-active {
-  /* when this toggled in nav-links class, nav pops back in from -100% */
   transform: translateX(0%);
 }
 
@@ -285,11 +199,6 @@ nav {
   transform: rotate(45deg) translate(-5px, -6px);
 }
 /* ! DevEd version END */
-
-/* 
-justify-* is row axis or inline axis
-align-* is column axis or block axis
-*/
 
 .input-container {
   grid-area: input-container;
