@@ -277,73 +277,72 @@ for (let i = 1; i <= 60; i++) {
 barSeconds.insertAdjacentHTML("afterbegin", barElement.join(""));
 
 function getRandomRotation() {
-  // return Math.floor(Math.random() * 360);
   return Math.floor(Math.random() * 361);
 }
 
-let currentRotation = 15;
+let currentHRotation = 15;
 let currentMRotation = 180;
 let currentSRotation = 108;
+
+function setHandRotaion(currentHandRotation, randomHandRotaion, handStep) {
+  // handstep: 6 for minutes and seconds 360 / 6 = 60
+  // handstep: 30 for hour hand 360 / 30 = 12
+  return (
+    Math.floor(((currentHandRotation + randomHandRotaion) % 360) / handStep) *
+    handStep
+  );
+}
+
+function preMovementStyleEffect(hand, rotationDegrees) {
+  hand.style.transition = "none"; //*this is necessary. For some reason, if this not here it moves using closest path. Could go counter clockwise and not give the 1440deg added to ration.
+  hand.style.transform = `rotate(${rotationDegrees}deg)`;
+}
+
+function initiateHandStyleEffect(hand, newRotation, duration, delay) {
+  hand.style.transition = `transform ${duration}s cubic-bezier(0.25, -0.1, 0.25, 1.1) ${delay}s `;
+  hand.style.transform = `rotate(${newRotation + 1440}deg)`;
+}
 
 function movehand() {
   const sRandomRotation = getRandomRotation();
   const mRandomRotation = getRandomRotation();
   const hRandomRotation = getRandomRotation();
 
-  const newRotation = currentRotation + hRandomRotation;
-  // const newMRotation = currentMRotation + mRandomRotation + 1440;
-  // const newMRotation = currentMRotation + mRandomRotation;
-  const newMRotation =
-    Math.floor(((currentMRotation + mRandomRotation) % 360) / 6) * 6;
+  const newMRotation = setHandRotaion(currentMRotation, mRandomRotation, 6);
 
-  let mRatio = Math.floor(
-    ((Math.floor(((currentMRotation + mRandomRotation) % 360) / 6) * 6) / 360) *
-      30
-  );
-  // console.log(currentMRotation, mRandomRotation);
-  // console.log(mRatio);
+  //* mRatio is the amount of hour hand movement in degrees past the hour depending on minutes. Every hour is 30 degrees
+  let mRatio = Math.floor(((currentMRotation + mRandomRotation) % 360) / 12);
 
-  let newSRotation =
-    Math.floor(((currentSRotation + sRandomRotation) % 360) / 6) * 6;
+  const newSRotation = setHandRotaion(currentSRotation, sRandomRotation, 6);
 
-  // const newHRotation = Math.floor(newRotation % 360);
-  const newHRotation = Math.floor(newRotation / 30) * 30 + mRatio;
+  const newHRotation =
+    setHandRotaion(currentHRotation, hRandomRotation, 30) + mRatio;
 
-  hourHand.style.transition = "none"; //this is necessary
-  hourHand.style.transform = `rotate(${currentRotation}deg)`;
-
-  minuteHand.style.transition = "none"; //this is necessary
-  minuteHand.style.transform = `rotate(${currentMRotation}deg)`;
-
-  secondHand.style.transition = "none"; //this is necessary
-  secondHand.style.transform = `rotate(${currentSRotation}deg)`;
+  preMovementStyleEffect(hourHand, currentHRotation);
+  preMovementStyleEffect(minuteHand, currentMRotation);
+  preMovementStyleEffect(secondHand, currentSRotation);
 
   btnStartGame.disabled = true;
   btnVerifyScore.disabled = false;
 
-  hourHand.offsetHeight; //this is necessary
+  hourHand.offsetHeight; //*this is necessary. offsetHeight property - This has to do with Browser Rendering Pipeline - claude ai has a really good expanation on this.  offsetHeight is only needed on one element for Reflow and force the browser to calculate layout immediately. the below two aren't needed
   minuteHand.offsetHeight; //this is necessary
   secondHand.offsetHeight; //this is necessary
 
-  hourHand.style.transition = `transform 4s cubic-bezier(0.25, -0.1, 0.25, 1.1)`;
-  minuteHand.style.transition = `transform 3s cubic-bezier(0.25, -0.1, 0.25, 1.1) .25s`;
-  secondHand.style.transition = `transform 3.5s cubic-bezier(0.25, -0.1, 0.25, 1.1) .5s`;
+  initiateHandStyleEffect(hourHand, newHRotation, 4, 0);
+  initiateHandStyleEffect(minuteHand, newMRotation, 3, 0.25);
+  initiateHandStyleEffect(secondHand, newSRotation, 3.5, 0.5);
 
-  hourHand.style.transform = `rotate(${newHRotation + 1440}deg)`;
-  minuteHand.style.transform = `rotate(${newMRotation + 1440}deg)`;
-  secondHand.style.transform = `rotate(${newSRotation + 1440}deg)`;
+  currentHRotation = (newHRotation + 1440) % 360;
+  console.log(currentHRotation);
 
-  currentRotation = (newHRotation + 1440) % 360;
-  // currentRotation = newHRotation;
   currentMRotation = newMRotation % 360;
   currentSRotation = newSRotation % 360;
 
   let currentHour =
-    Math.floor(currentRotation / 30) == 0
+    Math.floor(currentHRotation / 30) == 0
       ? 12
-      : Math.floor(currentRotation / 30);
-
-  // console.log((newMRotation % 360) / 6);
+      : Math.floor(currentHRotation / 30);
 
   aClockValues.hour = currentHour;
   aClockValues.minute = newMRotation / 6;
@@ -356,8 +355,3 @@ function movehand() {
     btnVerifyScore.disabled = false;
   }, 3000);
 }
-
-// hourHand.addEventListener("transitioned", function () {
-//   this.style.transition = "none";
-//   this.style.transform = `rotate(${currentRotation}deg)`;
-// });
