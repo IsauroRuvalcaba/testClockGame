@@ -79,14 +79,6 @@ nav {
   }
 }
 
-.score-board {
-  font-size: 1rem;
-  color: rgb(226, 226, 226);
-  justify-items: center;
-  align-content: center;
-  font-weight: 600;
-}
-
 .nav-links {
   display: flex;
   justify-content: space-around;
@@ -289,6 +281,8 @@ rt {
   transition: 0.4s ease-in-out;
 }
 
+/* https://www.google.com/search?q=how+to+add+add+one+div+element+to+bottom+left+corner+and+another+to+bottom+right+corner+of+parent+div&sca_esv=1e4d509914ca8c34&sxsrf=AHTn8zrjVv0MK7KCyjcEznY0n0i6kS7w0Q%3A1738983788167&ei=bMmmZ5-BCpavur8Pw4qqkQQ&ved=0ahUKEwif59q3i7OLAxWWl-4BHUOFKkIQ4dUDCBA&uact=5&oq=how+to+add+add+one+div+element+to+bottom+left+corner+and+another+to+bottom+right+corner+of+parent+div&gs_lp=Egxnd3Mtd2l6LXNlcnAiZWhvdyB0byBhZGQgYWRkIG9uZSBkaXYgZWxlbWVudCB0byBib3R0b20gbGVmdCBjb3JuZXIgYW5kIGFub3RoZXIgdG8gYm90dG9tIHJpZ2h0IGNvcm5lciBvZiBwYXJlbnQgZGl2SNqoAlDMFFjipgJwDngBkAEAmAFuoAGVMqoBBDgxLjO4AQPIAQD4AQGYAkqgAvIpwgIKEAAYsAMY1gQYR8ICBRAAGIAEwgIGEAAYFhgewgILEAAYgAQYhgMYigXCAgUQABjvBcICCBAAGIAEGKIEwgIHECEYoAEYCsICBRAhGKsCwgIEECMYJ8ICChAAGIAEGBQYhwLCAgcQABiABBgNwgIIEAAYFhgKGB7CAgUQIRigAcICBRAhGJ8FmAMAiAYBkAYIkgcFNjQuMTCgB-HHAw&sclient=gws-wiz-serp */
+
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -369,16 +363,61 @@ rt {
 }
 
 .clock-container {
+  width: 100%;
+  height: 100%;
+  /** Newest way of centering a div */
+  justify-items: center; /* horizontal */
+  align-content: center; /* vertically */
   overflow: hidden;
+  position: relative;
 }
+
+.indicator {
+  height: auto;
+}
+.indicator div {
+  font-size: 1.1rem;
+}
+.backgroundRed {
+  background-color: red;
+  color: white;
+  text-align: center;
+  width: 60px;
+  border-radius: 16px;
+}
+
+.score-board {
+  font-size: 1.3rem;
+  /* color: rgb(226, 226, 226); */
+  justify-items: center;
+  align-content: center;
+  /* font-weight: 600; */
+  position: absolute; /*make sure parent as relative*/
+  bottom: 0;
+  left: 0;
+  margin-left: 10px;
+}
+.timer {
+  position: absolute;
+  justify-items: center;
+  align-content: center;
+  bottom: 0;
+  right: 0;
+  font-size: 1.3rem;
+  margin-right: 10px;
+}
+/* .time-left {
+  content: "\200B";
+  height: auto;
+} */
 
 .clock {
   grid-area: clock;
   background: linear-gradient(120deg, #e6e9ef, #eef0f5);
   /* width: 450px;
   height: 450px; */
-  width: 375px;
-  height: 375px;
+  width: 345px;
+  height: 345px;
   border-radius: 50%;
   box-shadow: -20px -20px 60px rgba(255, 255, 255, 0.5),
     20px 20px 20px -5px rgba(166, 180, 200, 0.5);
@@ -395,8 +434,8 @@ rt {
 .wrapper {
   /* width: 390px;
   height: 390px; */
-  width: 330px;
-  height: 330px;
+  width: 300px;
+  height: 300px;
   background: linear-gradient(to top, #eceef3, #f1f2f7);
   border-radius: 50%;
   box-shadow: inset 10px 10px 10px rgba(166, 180, 200, 0.5),
@@ -422,17 +461,48 @@ rt {
 .bar-seconds span {
   position: absolute;
   transform: rotate(calc(var(--index) * (360deg / 60)));
+  /* inset: 30px;  for min num selection*/
   inset: 35px;
   text-align: center;
+  transition: all 1s
+    linear(
+      0,
+      1 44.7%,
+      0.898 51.8%,
+      0.874 55.1%,
+      0.866 58.4%,
+      0.888 64.3%,
+      1 77.4%,
+      0.98 84.5%,
+      1
+    );
 }
 
 .bar-seconds span p {
   display: inline-block;
+
   width: 2px;
-  height: 4px;
-  background: #646e8260;
+  height: 6px;
+  /* background: #646e829b; #646e8260 */
   border-radius: 2px;
   box-shadow: 0 0 10px #646e8260;
+  /* transition: all 1s linear; */
+}
+
+.tickColor {
+  background: #646e829b;
+
+  /* transform: rotate(calc(var(--index) * (-360deg / 60))); */
+}
+
+.clockMNums {
+  font-size: 0.55rem;
+  transform: rotate(calc(var(--index) * (-360deg / 60))) translateX(-3px)
+    translateY(-1px);
+  width: auto;
+  height: auto;
+  background: transparent;
+  /* transition: all 1s linear; */
 }
 
 .bar-seconds span:nth-child(5n) p {

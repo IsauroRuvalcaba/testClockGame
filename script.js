@@ -9,6 +9,7 @@ const btnCancelGame = document.querySelector(".cancelGame");
 const btnVerifyScore = document.querySelector(".verifyScore");
 const totalScore = document.getElementById("totalScore");
 let dClock = document.querySelector(".dDisplay");
+const timerEl = document.querySelector(".time-left");
 
 // btnSpinClock.disabled = true;
 btnVerifyScore.disabled = true;
@@ -114,33 +115,62 @@ function compareObjects() {
   }
 }
 
+function postTimeLeft() {
+  // const timerEl = document.querySelector(".time-left");
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  timerEl.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
+}
+
+function flash() {
+  timerEl.classList.toggle("backgroundRed");
+}
+
 let timeLeftCountDown;
+let flashInterval;
+let timeLeft = 12;
 
 function countDown() {
-  let timeLeft = 120;
+  // let timeLeft = 120;
   // console.log(timeLeft);
 
-  timeLeftCountDown = setInterval(() => {
-    const timerEl = document.querySelector(".time-left");
-    timeLeft -= 1;
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
+  flashInterval = setInterval(() => {
+    if (timeLeft <= 10 && timeLeft > 0) {
+      flash();
+    }
+    if (timeLeft <= 0) {
+      clearInterval(flashInterval);
+    }
+  }, 500);
 
-    timerEl.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
+  timeLeftCountDown = setInterval(() => {
+    // const timerEl = document.querySelector(".time-left");
+    timeLeft -= 1;
+    // const mins = Math.floor(timeLeft / 60);
+    // const secs = timeLeft % 60;
+
+    // timerEl.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
+    postTimeLeft();
 
     if (timeLeft <= 0) {
       clearInterval(timeLeftCountDown);
+      clearInterval(flashInterval);
       btnStartGame.disabled = false;
       btnVerifyScore.disabled = true;
     }
   }, 1000);
 }
+postTimeLeft();
 
 const cancelTimeGame = () => {
   console.log("cancel btn pressed");
   btnStartGame.disabled = false;
   btnVerifyScore.disabled = true;
   clearInterval(timeLeftCountDown);
+  clearInterval(flashInterval);
+
+  timeLeft = 120;
+  postTimeLeft();
 };
 
 const startGame = () => {
@@ -261,7 +291,7 @@ navSlide();
 // ! DevEd navigation END
 
 const numberElement = [];
-const barElement = [];
+let barElement = [];
 
 // create number hours
 for (let i = 1; i <= 12; i++) {
@@ -270,10 +300,92 @@ for (let i = 1; i <= 12; i++) {
 numberHours.insertAdjacentHTML("afterbegin", numberElement.join(""));
 
 // create bar seconds
+let minuteNumberStatus = false;
+
 for (let i = 1; i <= 60; i++) {
   barElement.push(`<span style="--index:${i};"><p></p></span>`);
 }
 
+function createMinuteTicksOrNumbers() {
+  for (let i = 1; i <= 60; i++) {
+    if (!minuteNumberStatus) {
+      barElement.push(
+        `<span style="--index:${i};"><p class="tickColor">${""}</p></span>`
+      );
+    } else {
+      if (i % 5 === 0) {
+        barElement.push(
+          `<span  style="--index:${i};"><p class="tickColor">${" "}</p></span>`
+        );
+      } else {
+        barElement.push(
+          `<span  style="--index:${i};"><p class="tickColor">${i}</p></span>`
+        );
+      }
+    }
+  }
+}
+createMinuteTicksOrNumbers();
+
+function toggleMinuteNumberTicks2() {
+  minuteNumberStatus = !minuteNumberStatus;
+  const numTickMinuteSecond = document.querySelectorAll(".bar-seconds span");
+
+  for (let element of numTickMinuteSecond) {
+    const tickNumber = element.style.getPropertyValue("--index");
+    const pElement = element.querySelector("p");
+    const tickValue = tickNumber % 5 === 0 ? "" : tickNumber;
+    pElement.textContent = minuteNumberStatus ? tickValue : "";
+  }
+
+  const clockMTicks = document.querySelectorAll(".bar-seconds span p");
+  const insetTickStyle = document.querySelectorAll(".bar-seconds span");
+
+  clockMTicks.forEach((tick, index) => {
+    if (minuteNumberStatus) {
+      tick.classList.add("clockMNums");
+    } else {
+      tick.classList.remove("clockMNums");
+    }
+  });
+
+  insetTickStyle.forEach((tick) => {
+    tick.style.inset = minuteNumberStatus ? "30px" : "35px";
+  });
+}
+
+//* this is on the button
+function toggleMinuteNumberTicks() {
+  const removeMinuteElements = document.querySelectorAll(".bar-seconds span");
+  for (let element of removeMinuteElements) {
+    console.log(element.style.getPropertyValue("--index"));
+    console.log(element.querySelector("p"));
+    element.remove();
+  }
+  minuteNumberStatus = !minuteNumberStatus;
+  barElement = [];
+
+  createMinuteTicksOrNumbers();
+  barSeconds.insertAdjacentHTML("afterbegin", barElement.join(""));
+
+  const clockMTicks = document.querySelectorAll(".bar-seconds span p");
+  const insetTickStyle = document.querySelectorAll(".bar-seconds span");
+
+  clockMTicks.forEach((tick, index) => {
+    if (minuteNumberStatus) {
+      tick.classList.add("clockMNums");
+    } else {
+      tick.classList.remove("clockMNums");
+    }
+  });
+
+  insetTickStyle.forEach((tick) => {
+    tick.style.inset = minuteNumberStatus ? "30px" : "35px";
+  });
+  console.log(minuteNumberStatus);
+}
+
+// insertAdjacentHTML(position, text) method parses the specified text as HTMLand inserts the resulting nodes into the DOM tree at a specified position.  -- afterbegin - inside element before first child
 barSeconds.insertAdjacentHTML("afterbegin", barElement.join(""));
 
 function getRandomRotation() {

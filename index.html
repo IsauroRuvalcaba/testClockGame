@@ -17,14 +17,10 @@
         <div class="logo">
           <h4>Esteban's Clock</h4>
         </div>
-        <div class="score-board">
-          <div>Total Score</div>
-          <div id="totalScore">0</div>
-        </div>
-        <div class="timer">
-          <div>Time Left</div>
-          <div class="time-left"></div>
-        </div>
+        <button class="xperiment" onclick="toggleMinuteNumberTicks2()">
+          Push
+        </button>
+
         <ul class="nav-links">
           <li><a href="#">Home</a></li>
           <li><a href="#">About</a></li>
@@ -49,6 +45,18 @@
           <div class="hand seconds"></div>
           <!-- </div> -->
         </div>
+      </div>
+      <!-- show/hide time and score here with https://www.youtube.com/watch?v=HKapGix6sis 
+      also: https://www.youtube.com/watch?v=gGJTBpDwsSM 
+      -->
+      <div class="score-board indicator">
+        <div>Total Score</div>
+        <div id="totalScore">0</div>
+      </div>
+      <div class="timer indicator">
+        <div>Time Left</div>
+        <!-- <div class="time-left">2:00</div> -->
+        <div class="time-left"></div>
       </div>
     </div>
     <div class="input-container">
