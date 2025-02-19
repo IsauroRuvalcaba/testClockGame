@@ -538,7 +538,7 @@ rt {
 }
 
 .minutes {
-  width: 5px;
+  width: 6px;
   height: 30%;
   background: #646e82;
   transform: rotate(180deg);

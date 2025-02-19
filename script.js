@@ -10,6 +10,9 @@ const btnVerifyScore = document.querySelector(".verifyScore");
 const totalScore = document.getElementById("totalScore");
 let dClock = document.querySelector(".dDisplay");
 const timerEl = document.querySelector(".time-left");
+const hRange = document.getElementById("hRange");
+const mRange = document.getElementById("mRange");
+const sRange = document.getElementById("sRange");
 
 // btnSpinClock.disabled = true;
 btnVerifyScore.disabled = true;
@@ -22,7 +25,7 @@ let value = document.querySelectorAll(".value");
 let dClockValues = {
   hour: 12,
   minute: 30,
-  second: 28,
+  second: 18,
 };
 
 let aClockValues = {
@@ -62,6 +65,10 @@ function getTime() {
   aClockValues.hour = dClockValues.hour;
   aClockValues.minute = dClockValues.minute;
   aClockValues.second = dClockValues.second;
+
+  hRange.value = dClockValues.hour;
+  mRange.value = dClockValues.minute;
+  sRange.value = dClockValues.second;
 }
 getTime();
 
@@ -184,10 +191,12 @@ const startGame = () => {
   countDown();
 };
 
+// ! change this on a button
+let learningMode = true;
 sliders.forEach((slider, index) => {
   // console.log(slider.querySelector(".value").innerHTML);
-  let tValue = slider.querySelector("input").dataset.time;
-  slider.querySelector(".slider").value = dClockValues[tValue];
+  // let tValue = slider.querySelector("input").dataset.time;
+  // slider.querySelector(".slider").value = dClockValues[tValue];
 
   //* when hovering and using the scroll wheel
   // https://stackoverflow.com/questions/67651894/how-do-i-change-the-value-of-a-range-input-by-user-scroll
@@ -224,6 +233,9 @@ sliders.forEach((slider, index) => {
     // console.log(slider.querySelector(".slider").value);
     let tValue = slider.querySelector("input").dataset.time;
     dClockValues[tValue] = +slider.querySelector(".slider").value;
+    // console.log(tValue, +slider.querySelector(".slider").value);
+
+    if (learningMode) sliderHandMove();
 
     dClock.innerHTML = `<span class=dHour>${
       dClockValues.hour
@@ -239,6 +251,10 @@ sliders.forEach((slider, index) => {
     // console.log(slider.querySelector(".slider").value);
     let tValue = slider.querySelector("input").dataset.time;
     dClockValues[tValue] = +slider.querySelector(".slider").value;
+    console.log(tValue, +slider.querySelector(".slider").value, dClockValues);
+    // console.log("sliding ", sliderHandMove());
+
+    if (learningMode) sliderHandMove();
 
     dClock.innerHTML = `<span class=dHour>${
       dClockValues.hour
@@ -467,3 +483,20 @@ function movehand() {
     btnVerifyScore.disabled = false;
   }, 3000);
 }
+
+function sliderHandMove() {
+  // dClockValues
+  const slideSecondHand = dClockValues.second * 6;
+  const slideMinuteHand = dClockValues.minute * 6;
+  const slideHourHand =
+    dClockValues.hour * 30 + Math.floor((slideMinuteHand / 425) * 30);
+
+  //* made it 400 because 360 had the hour to close to following hour when minute was at 59. Could cause confusing on the little ones' learning
+  // const minuteRatioAddOn = Math.floor((slideMinuteHand / 425) * 30);
+  secondHand.style.transform = `rotate(${slideSecondHand}deg)`;
+  minuteHand.style.transform = `rotate(${slideMinuteHand}deg)`;
+  hourHand.style.transform = `rotate(${slideHourHand}deg)`;
+  console.log(slideSecondHand, slideMinuteHand, slideHourHand);
+}
+
+// sliderHandMove(hourHand, 180);
