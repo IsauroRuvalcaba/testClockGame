@@ -12,7 +12,7 @@
 body,
 html {
   overflow: hidden;
-  position: fixed;
+  /* position: fixed; */
   width: 100%;
   height: 100%;
 }
@@ -42,6 +42,9 @@ body {
   grid-template-rows: 100px auto auto;
   background: #eef0f5;
   overflow: hidden;
+
+  /*Todo: this has to do with the transition effect 3 for the modal. It gives the rotate property a 3D effect. The smaller the number the greater the effect */
+  perspective: 400px;
 }
 
 .header {
@@ -117,7 +120,7 @@ nav {
 @media screen and (max-width: 768px) {
   body,
   html {
-    overflow: hidden;
+    /* overflow: hidden; */
     position: fixed;
     width: 100%;
     height: 100%;
@@ -368,7 +371,7 @@ rt {
   /** Newest way of centering a div */
   justify-items: center; /* horizontal */
   align-content: center; /* vertically */
-  overflow: hidden;
+  /* overflow: hidden; */
   position: relative;
 }
 
@@ -589,6 +592,167 @@ rt {
   /* position: absolute;
   bottom: 0;
   margin-bottom: 10px; */
+}
+
+/** Modal styles */
+.modal-bg {
+  background-color: rgba(184, 184, 184, 0.432);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(2px);
+  display: none;
+}
+
+.modal-bg.open {
+  display: block;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px;
+  background-color: #fff;
+  position: absolute;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(128, 128, 128, 0.164);
+  gap: 20px;
+  padding: 20px;
+
+  /* below the effect of moving */
+
+  /** effect 1 */
+  /* transform: translateY(-500px); */
+
+  /** effect 2 */
+  transform: scale(0.5) translateY(10%);
+
+  /** effect 3 */
+  /* transform: rotateX(65deg) scale(0.75) translateY(10%);
+  transform-origin: 50% 100%; */
+
+  /* perspective is used in the parent elemnt, this being body, to give a 3D effect on the rotate in the transform for effect 3 */
+
+  /* I think transitions for all effects */
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out,
+    visibility 0.5s ease-in-out;
+}
+.modal.open {
+  visibility: visible;
+  opacity: 1;
+
+  /* effect 1 */
+  /* transform: translateY(0); */
+
+  /* effect 2 */
+  transform: scale(1) translateY(0);
+
+  /* effect 3 */
+  /* transform: rotateX(0) scale(1) translateY(0); */
+}
+
+.close-btn {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 22px;
+  font-weight: 600;
+  filter: drop-shadow(0 0 2px rgba(124, 124, 124, 0.468));
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: red;
+  transition: color 0.2s ease-in-out;
+}
+
+.interactive-element {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+.selection-area {
+  align-items: center;
+  background: #eee;
+  border: 1px solid lightgrey;
+  border-radius: 9999px;
+  display: flex;
+  justify-content: center;
+  margin: 20px auto; /*!change*/
+  max-width: 400px; /*!change*/
+  overflow: hidden;
+  padding: 4px;
+  position: relative;
+}
+label {
+  cursor: pointer;
+  padding: 8px 15px;
+  text-align: center;
+  width: 33.33%;
+  z-index: 2; /*! maybe change - investigate*/
+}
+.slide-item {
+  background: white;
+  border-radius: 9999px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  height: calc(100% - 8px);
+  left: calc(66.66% + 4px);
+  position: absolute;
+  width: calc(33.33% - 4px);
+  transition: left 0.3s;
+  z-index: 0;
+}
+input[type="radio"] {
+  left: -9999px;
+  position: absolute;
+  z-index: -1;
+}
+input[type="radio"]:nth-of-type(1):checked ~ .slide-item {
+  left: 1px;
+}
+input[type="radio"]:nth-of-type(2):checked ~ .slide-item {
+  left: calc(33.33% + 4px);
+}
+input[type="radio"]:nth-of-type(3):checked ~ .slide-item {
+  left: calc(66.66% + 4px);
+}
+
+/* .description {
+  font-size: 14px;
+  color: gray;
+  text-align: center;
+} */
+
+.description-container {
+  width: 100%;
+  position: relative; /* Needed for absolute positioning of descriptions */
+  /*height: 100px;*/ /*Adjust as needed */
+  overflow: hidden; /* Hide descriptions outside the container */
+  font-size: 1rem;
+  color: gray;
+  text-align: center;
+  transition: height 0.3s ease-in-out; /* Add transition for height */
+}
+
+.description {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0; /* Initially hidden */
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; /* Smooth transitions */
+  transform: translateY(20px); /* Start slightly below */
+}
+
+.description.active {
+  opacity: 1;
+  transform: translateY(0); /* Move into position */
 }
 
 /* 

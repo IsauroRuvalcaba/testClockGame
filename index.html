@@ -20,6 +20,7 @@
         <button class="xperiment" onclick="toggleMinuteNumberTicks2()">
           Push
         </button>
+        <button class="open-modal">Modal</button>
         <!-- for animations on the links https://www.youtube.com/watch?v=xB27AuRa5h4 -->
         <ul class="nav-links">
           <li><a href="#">Home</a></li>
@@ -34,11 +35,7 @@
         </div>
       </nav>
     </header>
-    <!-- Modal with animations https://www.youtube.com/watch?v=F3ABpPwexCg
-     
-    https://www.youtube.com/watch?v=01tLiSAQN1U
 
-    -->
     <div class="clock-container">
       <div class="clock">
         <div class="wrapper">
@@ -128,8 +125,91 @@
       <!-- <div>
       </div> -->
     </div>
+
+    <!-- Modal with animations - used a combination of both https://www.youtube.com/watch?v=F3ABpPwexCg https://www.youtube.com/watch?v=01tLiSAQN1U
+    -->
+    <div class="modal-bg"></div>
+    <div class="modal">
+      <div class="close-btn">X</div>
+      <div class="interactive-element">
+        <!--! neumorphic radio button tutorial https://www.youtube.com/watch?v=AzeaHFQ5xsk -->
+        <div class="selection-area">
+          <input type="radio" name="status" id="learn" value="learnDesc" />
+          <label for="learn">Learn</label>
+          <input type="radio" name="status" id="tutorial" value="tutDesc" />
+          <label for="tutorial">Tutorial</label>
+          <input
+            type="radio"
+            name="status"
+            id="game"
+            checked
+            value="gameDesc"
+          />
+          <label for="game">Game</label>
+          <div class="slide-item"></div>
+        </div>
+        <div class="description-container">
+          <div class="description learn-desc" data-option="learnDesc">
+            <p>
+              Use the slide ranges to move each unit of time to the
+              corresponding clock hand.
+            </p>
+          </div>
+          <div class="description tutorial-desc" data-option="tutDesc">
+            <p>
+              Practice telling time by randomly spining the analog clock and and
+              matching the digital numbers with the corresponding units of time.
+            </p>
+          </div>
+          <div class="description game-desc active" data-option="gameDesc">
+            <p>
+              Play the two minute game and see how high of a score you can get.
+            </p>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
+
+<!-- 
+<p class="description learn-desc" data-option="learnDesc">
+            Use the slide ranges to move each unit of time to the corresponding
+            clock hand.
+          </p>
+          <p class="description tutorial-desc" data-option="tutDesc">
+            Practice telling time by randomly spining the analog clock and and
+            matching the digital numbers with the corresponding units of time.
+          </p>
+          <p class="description game-desc active" data-option="gameDesc">
+            Play the two minute game and see how high of a score you can get.
+          </p>
+
+-->
+
+<!--? potential class names
+
+General Structure:
+tutorial-container, lesson-section, game-area, progress-bar, interactive-element, and user-profile.
+Tutorial Content:
+step-instructions, example-code, key-concept, quiz-question, explanation-text, and video-player.
+Game Elements:
+game-board, level-indicator, avatar, challenge-button, score-display, and feedback-message.
+User Interaction:
+next-button, previous-button, submit-answer, retry-button, hint-toggle, and star-rating.
+Progress Tracking:
+completed-lesson, unlocked-level, badge-achievement, and progress-milestone.
+Important Considerations:
+Clarity:
+Use names that clearly indicate the element's purpose (e.g., tutorial-nav instead of just nav).
+Consistency:
+Stick to a naming convention, like using hyphens to separate words (tutorial-step not tutorialStep).
+Specificity:
+Avoid overly generic class names, especially if you have multiple similar elements on a page.
+Future-proofing:
+Consider potential future features when naming classes, allowing for easy adaptation.
+-->
 
 <!-- ** to format digital clock -->
 <!-- https://www.codingnepalweb.com/digital-clock-using-javascript-2/ -->

@@ -14,6 +14,17 @@ const hRange = document.getElementById("hRange");
 const mRange = document.getElementById("mRange");
 const sRange = document.getElementById("sRange");
 
+//* modal section
+const openBtn = document.querySelector(".open-modal");
+const closeBtn = document.querySelector(".close-btn");
+const modalBg = document.querySelector(".modal-bg");
+const modal = document.querySelector(".modal");
+
+const radioButtons = document.querySelectorAll('input[name="status"]');
+const descriptions = document.querySelectorAll(".description");
+const descriptionContainer = document.querySelector(".description-container"); // Get the container
+const initialActiveDescription = document.querySelector(".description.active");
+
 // btnSpinClock.disabled = true;
 btnVerifyScore.disabled = true;
 
@@ -484,6 +495,7 @@ function movehand() {
   }, 3000);
 }
 
+// analog clock movement when sliding the input range when in learning mode
 function sliderHandMove() {
   // dClockValues
   const slideSecondHand = dClockValues.second * 6;
@@ -499,4 +511,45 @@ function sliderHandMove() {
   console.log(slideSecondHand, slideMinuteHand, slideHourHand);
 }
 
-// sliderHandMove(hourHand, 180);
+// Open Modal function
+function openModal() {
+  //Todo: because in css oneClass.open and twoClass.open can be referenced and the classess can do different things. Just learned this
+
+  modalBg.classList.add("open");
+  modal.classList.add("open");
+}
+
+openBtn.addEventListener("click", openModal);
+
+// Close Modal function
+function closeModal() {
+  modalBg.classList.remove("open");
+  modal.classList.remove("open");
+}
+
+closeBtn.addEventListener("click", closeModal);
+
+// outside Click close
+modalBg.addEventListener("click", closeModal);
+
+radioButtons.forEach((radio) => {
+  radio.addEventListener("change", () => {
+    const selectedOption = radio.value;
+    let activeDescriptionHeight = 0; // Initialize
+
+    descriptions.forEach((description) => {
+      if (description.dataset.option === selectedOption) {
+        description.classList.add("active");
+        activeDescriptionHeight = description.offsetHeight; // Get the height
+      } else {
+        description.classList.remove("active");
+      }
+    });
+    descriptionContainer.style.height = activeDescriptionHeight + "px"; // Set container height
+  });
+});
+
+if (initialActiveDescription) {
+  descriptionContainer.style.height =
+    initialActiveDescription.offsetHeight + "px";
+}
