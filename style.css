@@ -620,7 +620,8 @@ rt {
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(128, 128, 128, 0.164);
   gap: 20px;
-  padding: 20px;
+  padding: 10px;
+  top: 40%;
 
   /* below the effect of moving */
 
@@ -753,6 +754,88 @@ input[type="radio"]:nth-of-type(3):checked ~ .slide-item {
 .description.active {
   opacity: 1;
   transform: translateY(0); /* Move into position */
+}
+
+/* * input radio switch for numbers or ticks*/
+.switch {
+  position: relative;
+  width: 300px;
+  height: 3rem;
+  margin: 0 auto;
+  font-size: 0;
+  /* margin-bottom: 1rem; */
+  display: flex;
+  align-items: center;
+}
+.switch input {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  opacity: 0;
+  cursor: pointer;
+  height: 2rem;
+  width: 6rem;
+  left: 6rem;
+  margin: 0;
+}
+.switch input:checked {
+  z-index: 1;
+}
+.switch input:checked + label {
+  opacity: 1;
+  color: red;
+  cursor: default;
+}
+.switch input:not(:checked) + label:hover {
+  opacity: 0.5;
+}
+.switch label {
+  /* color: red; */
+  opacity: 0.33;
+  transition: opacity 0.25s ease-in-out;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 3rem;
+  display: inline-block;
+  width: 5rem;
+  height: 100%;
+  margin: 0;
+  text-align: center;
+}
+.switch .toggle-outside {
+  height: 30px;
+  border-radius: 2rem;
+  padding: 0.25rem;
+  overflow: hidden;
+  transition: 0.25s ease all;
+  /* background: #4a4a4a; */
+  background: gray;
+  position: absolute;
+  width: 4rem;
+  left: 6rem;
+}
+.switch .toggle-inside {
+  border-radius: 5rem;
+  background: #fff;
+  position: absolute;
+  transition: 0.25s ease all;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+.switch label:first-of-type {
+  margin-left: 0rem;
+}
+.switch label:last-of-type {
+  margin-left: 4.5rem;
+}
+input:nth-of-type(1):checked ~ .toggle-outside .toggle-inside {
+  left: 0.25rem;
+}
+input:nth-of-type(2):checked ~ .toggle-outside .toggle-inside {
+  left: 2.25rem;
+}
+hr {
+  margin: 0.5rem 0.5rem;
 }
 
 /* 

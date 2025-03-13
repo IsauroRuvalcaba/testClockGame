@@ -151,7 +151,7 @@
         <div class="description-container">
           <div class="description learn-desc" data-option="learnDesc">
             <p>
-              Use the slide ranges to move each unit of time to the
+              Use the slide ranges to move each unit of time with the
               corresponding clock hand.
             </p>
           </div>
@@ -165,7 +165,28 @@
             <p>
               Play the two minute game and see how high of a score you can get.
             </p>
-            <div></div>
+            <hr />
+            <p>Set the minute/second clock graduations to a number or tick</p>
+            <!-- <div> -->
+            <div class="switch">
+              <input
+                type="radio"
+                name="graduation-switch"
+                id="num-graduation"
+              />
+              <label for="num-graduation">Numbers</label>
+              <input
+                type="radio"
+                name="graduation-switch"
+                id="tick-graduation"
+                checked
+              />
+              <label for="tick-graduation">Ticks</label>
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+            <!-- </div> -->
           </div>
         </div>
       </div>

@@ -20,10 +20,11 @@ const closeBtn = document.querySelector(".close-btn");
 const modalBg = document.querySelector(".modal-bg");
 const modal = document.querySelector(".modal");
 
-const radioButtons = document.querySelectorAll('input[name="status"]');
+const radioButtonsStatus = document.querySelectorAll('input[name="status"]');
 const descriptions = document.querySelectorAll(".description");
 const descriptionContainer = document.querySelector(".description-container"); // Get the container
-const initialActiveDescription = document.querySelector(".description.active");
+const numSwitch = document.querySelector("#num-graduation");
+const tickSwitch = document.querySelector("#tick-graduation");
 
 // btnSpinClock.disabled = true;
 btnVerifyScore.disabled = true;
@@ -354,8 +355,13 @@ function createMinuteTicksOrNumbers() {
 }
 createMinuteTicksOrNumbers();
 
-function toggleMinuteNumberTicks2() {
-  minuteNumberStatus = !minuteNumberStatus;
+function toggleMinuteNumberTicks2(graduationTick) {
+  if (graduationTick === undefined) {
+    minuteNumberStatus = !minuteNumberStatus;
+  } else {
+    minuteNumberStatus = graduationTick;
+  }
+
   const numTickMinuteSecond = document.querySelectorAll(".bar-seconds span");
 
   for (let element of numTickMinuteSecond) {
@@ -379,6 +385,10 @@ function toggleMinuteNumberTicks2() {
   insetTickStyle.forEach((tick) => {
     tick.style.inset = minuteNumberStatus ? "30px" : "35px";
   });
+
+  numSwitch.checked = minuteNumberStatus;
+  // this is needed to make sure the input psuedo checked class + label changes
+  tickSwitch.checked = !minuteNumberStatus;
 }
 
 //* this is on the button
@@ -525,6 +535,10 @@ openBtn.addEventListener("click", openModal);
 function closeModal() {
   modalBg.classList.remove("open");
   modal.classList.remove("open");
+
+  setTimeout(() => {
+    toggleMinuteNumberTicks2(numSwitch.checked);
+  }, 500);
 }
 
 closeBtn.addEventListener("click", closeModal);
@@ -532,7 +546,7 @@ closeBtn.addEventListener("click", closeModal);
 // outside Click close
 modalBg.addEventListener("click", closeModal);
 
-radioButtons.forEach((radio) => {
+radioButtonsStatus.forEach((radio) => {
   radio.addEventListener("change", () => {
     const selectedOption = radio.value;
     let activeDescriptionHeight = 0; // Initialize
@@ -540,6 +554,8 @@ radioButtons.forEach((radio) => {
     descriptions.forEach((description) => {
       if (description.dataset.option === selectedOption) {
         description.classList.add("active");
+        // Force layout (crucial!)
+        // window.getComputedStyle(description).opacity;
         activeDescriptionHeight = description.offsetHeight; // Get the height
       } else {
         description.classList.remove("active");
@@ -549,7 +565,57 @@ radioButtons.forEach((radio) => {
   });
 });
 
-if (initialActiveDescription) {
-  descriptionContainer.style.height =
-    initialActiveDescription.offsetHeight + "px";
-}
+//*  ensuring that the JavaScript code to calculate the height is executed after the modal animations have completed
+// modal.addEventListener("transitionend", (event) => {
+//   // Check if the transition that ended was the one you care about
+//   if (
+//     event.propertyName === "transform" ||
+//     event.propertyName === "opacity" ||
+//     event.propertyName === "visibility"
+//   ) {
+//     const initialActiveDescription = document.querySelector(
+//       ".description.active"
+//     );
+//     const pSelect = document.querySelector(".game-desc").querySelector("p");
+//     const inputSelect = document
+//       .querySelector(".game-desc")
+//       .querySelector("div");
+//     console.log(pSelect.offsetHeight, inputSelect.offsetHeight);
+//     console.log(initialActiveDescription.offsetHeight);
+//     if (initialActiveDescription) {
+//       requestAnimationFrame(() => {
+//         window.getComputedStyle(initialActiveDescription).opacity;
+//         descriptionContainer.style.height =
+//           initialActiveDescription.offsetHeight + "px";
+//       });
+//     }
+//   }
+// });
+
+const initialActiveDescription = document.querySelector(".description.active");
+// if (initialActiveDescription) {
+//   // console.log(initialActiveDescription);
+//   // initialActiveDescription.checked = true;
+//   // const pSelect = document.querySelector(".game-desc").querySelector("p");
+//   // const inputSelect = document.querySelector(".game-desc").querySelector("div");
+//   // console.log(pSelect.offsetHeight, inputSelect.offsetHeight);
+//   // console.log(initialActiveDescription.offsetHeight);
+
+//   if (initialActiveDescription) {
+//     requestAnimationFrame(() => {
+//       window.getComputedStyle(initialActiveDescription).opacity;
+//       descriptionContainer.style.height =
+//         initialActiveDescription.offsetHeight + "px";
+//     });
+//   }
+
+// initialActiveDescription.dispatchEvent(new Event("change"));
+setTimeout(() => {
+  if (initialActiveDescription) {
+    requestAnimationFrame(() => {
+      window.getComputedStyle(initialActiveDescription).opacity;
+      descriptionContainer.style.height =
+        initialActiveDescription.offsetHeight + "px";
+    });
+  }
+}, 500);
