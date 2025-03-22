@@ -5,14 +5,16 @@ const minuteHand = document.querySelector(".minutes");
 const secondHand = document.querySelector(".seconds");
 const btnStartGame = document.querySelector(".startGame");
 const btnCancelGame = document.querySelector(".cancelGame");
-// const btnSpinClock = document.querySelector(".spinClock");
+const btnSpinClock = document.querySelector(".spinClock");
 const btnVerifyScore = document.querySelector(".verifyScore");
+const gradsBtn = document.querySelector(".grads");
 const totalScore = document.getElementById("totalScore");
 let dClock = document.querySelector(".dDisplay");
 const timerEl = document.querySelector(".time-left");
 const hRange = document.getElementById("hRange");
 const mRange = document.getElementById("mRange");
 const sRange = document.getElementById("sRange");
+const gradBtnsInput = document.querySelectorAll('input[name="grads-btn"]');
 
 //* modal section
 const openBtn = document.querySelector(".open-modal");
@@ -21,6 +23,7 @@ const modalBg = document.querySelector(".modal-bg");
 const modal = document.querySelector(".modal");
 
 const radioButtonsStatus = document.querySelectorAll('input[name="status"]');
+
 const descriptions = document.querySelectorAll(".description");
 const descriptionContainer = document.querySelector(".description-container"); // Get the container
 const numSwitch = document.querySelector("#num-graduation");
@@ -387,7 +390,7 @@ function toggleMinuteNumberTicks2(graduationTick) {
   });
 
   numSwitch.checked = minuteNumberStatus;
-  // this is needed to make sure the input psuedo checked class + label changes
+  //! this is needed to make sure the input psuedo checked class + label changes
   tickSwitch.checked = !minuteNumberStatus;
 }
 
@@ -507,7 +510,11 @@ function movehand() {
 
 // analog clock movement when sliding the input range when in learning mode
 function sliderHandMove() {
-  // dClockValues
+  // trouble with below. have to remove any transitions that might have stayed from that states of game.
+  secondHand.style.transition = "none";
+  minuteHand.style.transition = "none";
+  hourHand.style.transition = "none";
+
   const slideSecondHand = dClockValues.second * 6;
   const slideMinuteHand = dClockValues.minute * 6;
   const slideHourHand =
@@ -529,6 +536,64 @@ function openModal() {
   modal.classList.add("open");
 }
 
+function removeClassStatus() {
+  const strtBtns = document.querySelectorAll(".start-btn");
+  // const gradsBtn = document.querySelector(".grads");
+  strtBtns.forEach((button) => {
+    button.classList.remove("appear");
+  });
+  gradsBtn.classList.remove("appear");
+}
+
+function setGameClasses() {
+  btnStartGame.classList.add("appear");
+  btnCancelGame.classList.add("appear");
+  btnSpinClock.classList.add("appear");
+  btnVerifyScore.classList.add("appear");
+}
+
+function showButtons(checkedSelectStatus) {
+  switch (checkedSelectStatus) {
+    case "learnDesc":
+      console.log("Time to learn");
+      removeClassStatus();
+      setTimeout(() => {
+        gradsBtn.classList.add("appear");
+      }, 500);
+      break;
+    case "tutDesc":
+      console.log("Tutorial time");
+      removeClassStatus();
+      setTimeout(() => {
+        btnSpinClock.classList.add("appear");
+        btnVerifyScore.classList.add("appear");
+        gradsBtn.classList.add("appear");
+      }, 500);
+      break;
+    case "gameDesc":
+      console.log("Game Time");
+      removeClassStatus();
+      setTimeout(() => {
+        setGameClasses();
+      }, 500);
+      break;
+    default:
+      console.log("Something is wrong");
+  }
+}
+
+//* to initially set all the game buttons
+setGameClasses();
+
+const statusSelection = () => {
+  //remember, this reference needs to update here and not put outside function because it needs the query to run fresh.
+  const checkedSelectStatus = document.querySelector(
+    'input[name="status"]:checked'
+  ).value;
+
+  showButtons(checkedSelectStatus);
+};
+
 openBtn.addEventListener("click", openModal);
 
 // Close Modal function
@@ -536,10 +601,20 @@ function closeModal() {
   modalBg.classList.remove("open");
   modal.classList.remove("open");
 
+  statusSelection();
+
   setTimeout(() => {
     toggleMinuteNumberTicks2(numSwitch.checked);
   }, 500);
 }
+
+gradBtnsInput.forEach((gradBtn) => {
+  gradBtn.addEventListener("change", function () {
+    const checkGradBtnSelect = document.querySelector("#num-grad-btn").checked;
+    console.log(checkGradBtnSelect);
+    toggleMinuteNumberTicks2(checkGradBtnSelect);
+  });
+});
 
 closeBtn.addEventListener("click", closeModal);
 

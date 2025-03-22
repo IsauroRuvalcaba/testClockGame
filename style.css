@@ -368,9 +368,12 @@ rt {
 .clock-container {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center; /* horizontal centering */
+  align-items: center; /* vertical centering */
   /** Newest way of centering a div */
-  justify-items: center; /* horizontal */
-  align-content: center; /* vertically */
+  /* justify-items: center; horizontal */
+  /* align-content: center; vertically */
   /* overflow: hidden; */
   position: relative;
 }
@@ -582,16 +585,71 @@ rt {
   box-shadow: 1px 1px 3px #fd382d60;
 } */
 
+/* Selection buttons */
 .buttons {
   display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  overflow: hidden;
   gap: 10px;
 }
 .start-btn {
   width: 80px;
+  height: 0px;
+  overflow: hidden;
+  display: none;
+  transition: height 0.5s ease-in-out, display 0.25s ease;
+  transition-behavior: allow-discrete;
+}
+.start-btn.appear {
+  display: inline-block;
   height: 40px;
-  /* position: absolute;
-  bottom: 0;
-  margin-bottom: 10px; */
+
+  @starting-style {
+    height: 0px;
+  }
+}
+
+.switch.grads {
+  width: 150px;
+  height: 0rem;
+  overflow: hidden;
+  display: none;
+  transition: height 0.75s ease, display 0.25s ease;
+  transition-behavior: allow-discrete;
+}
+.switch.grads input {
+  height: 1rem;
+  width: 3rem;
+  left: 3rem;
+}
+.switch.grads label {
+  line-height: 0.75rem;
+  width: 2.5rem;
+}
+.switch.grads .toggle-outside {
+  height: 20px;
+  width: 2.3rem;
+  left: 3.8rem;
+}
+.switch.grads .toggle-inside {
+  height: 0.75rem;
+  width: 0.75rem;
+}
+.switch.grads label:last-of-type {
+  margin-left: 3rem;
+}
+.switch.grads input:nth-of-type(2):checked ~ .toggle-outside .toggle-inside {
+  left: 1.25rem;
+}
+
+.switch.grads.appear {
+  display: flex;
+  height: 1.5rem;
+
+  @starting-style {
+    height: 0rem;
+  }
 }
 
 /** Modal styles */
