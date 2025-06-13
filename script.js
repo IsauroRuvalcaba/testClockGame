@@ -121,6 +121,31 @@ function idErrorBackground(unitTime) {
   }, 500);
 }
 
+function toggleScoreDisplay() {
+  // const scoreDisplayStatus = document.querySelectorAll(".indicator");
+  // for (const element of scoreDisplayStatus) {
+  //   element.classList.toggle("hide-score-display");
+  // }
+  const scoreDisplayStatus = document.querySelector(".score-display");
+  scoreDisplayStatus.classList.toggle("hide-score-display");
+}
+
+function cgptHideScoreDisplay(clockState) {
+  const body = document.querySelector("body");
+  console.log(clockState);
+
+  if (clockState === undefined) {
+    return body.classList.toggle("cgpt-hide-score-display");
+  }
+
+  clockState === "gameDesc"
+    ? body.classList.remove("cgpt-hide-score-display")
+    : body.classList.add("cgpt-hide-score-display");
+
+  // const scoreDisplayStatus = document.querySelector(".score-display");
+  // scoreDisplayStatus.classList.toggle("hide-score-display");
+}
+
 function compareObjects() {
   const Hour = dClockValues.hour - aClockValues.hour;
   const Minute = dClockValues.minute - aClockValues.minute;
@@ -206,8 +231,16 @@ const startGame = () => {
   countDown();
 };
 
+// const rangeInput = document.getElementById("mRange");
+// rangeInput.addEventListener("input", function () {
+//   console.log("Input: ", this.value);
+// });
+// rangeInput.addEventListener("change", function () {
+//   console.log("Change: ", this.value);
+// });
+
 // ! change this on a button
-let learningMode = true;
+let learningMode = false;
 sliders.forEach((slider, index) => {
   // console.log(slider.querySelector(".value").innerHTML);
   // let tValue = slider.querySelector("input").dataset.time;
@@ -217,11 +250,16 @@ sliders.forEach((slider, index) => {
   // https://stackoverflow.com/questions/67651894/how-do-i-change-the-value-of-a-range-input-by-user-scroll
   let sliderScroll = slider.querySelector(".slider");
 
+  sliderScroll.addEventListener("input", function () {
+    console.log("drag: ", this.id);
+  });
+
   let lastScrollTime = 0;
 
   sliderScroll.addEventListener("wheel", function (e) {
     // let event = new Event("change", { bubbles: true, cancelable: true });
     // sliderScroll.dispatchEvent(event);
+    console.log("Hover and wheel: ", this.id);
 
     const now = Date.now();
     const timeDiff = now - lastScrollTime;
@@ -266,7 +304,7 @@ sliders.forEach((slider, index) => {
     // console.log(slider.querySelector(".slider").value);
     let tValue = slider.querySelector("input").dataset.time;
     dClockValues[tValue] = +slider.querySelector(".slider").value;
-    console.log(tValue, +slider.querySelector(".slider").value, dClockValues);
+    // console.log(tValue, +slider.querySelector(".slider").value, dClockValues);
     // console.log("sliding ", sliderHandMove());
 
     if (learningMode) sliderHandMove();
@@ -358,6 +396,19 @@ function createMinuteTicksOrNumbers() {
 }
 createMinuteTicksOrNumbers();
 
+// this is to maintain and pass the state to the number/tick switch status to all switches
+const numSwitchSwitcher = () => {
+  const inputNumSwitch = document.querySelector("#num-grad-btn");
+  const inputTickSwitch = document.querySelector("#tick-grad-btn");
+
+  numSwitch.checked = minuteNumberStatus;
+  inputNumSwitch.checked = minuteNumberStatus;
+
+  //! this is needed to make sure the input psuedo checked class + label changes
+  tickSwitch.checked = !minuteNumberStatus;
+  inputTickSwitch.checked = !minuteNumberStatus;
+};
+
 function toggleMinuteNumberTicks2(graduationTick) {
   if (graduationTick === undefined) {
     minuteNumberStatus = !minuteNumberStatus;
@@ -389,9 +440,10 @@ function toggleMinuteNumberTicks2(graduationTick) {
     tick.style.inset = minuteNumberStatus ? "30px" : "35px";
   });
 
-  numSwitch.checked = minuteNumberStatus;
-  //! this is needed to make sure the input psuedo checked class + label changes
-  tickSwitch.checked = !minuteNumberStatus;
+  numSwitchSwitcher();
+  // numSwitch.checked = minuteNumberStatus;
+  // //! this is needed to make sure the input psuedo checked class + label changes
+  // tickSwitch.checked = !minuteNumberStatus;
 }
 
 //* this is on the button
@@ -525,7 +577,7 @@ function sliderHandMove() {
   secondHand.style.transform = `rotate(${slideSecondHand}deg)`;
   minuteHand.style.transform = `rotate(${slideMinuteHand}deg)`;
   hourHand.style.transform = `rotate(${slideHourHand}deg)`;
-  console.log(slideSecondHand, slideMinuteHand, slideHourHand);
+  // console.log(slideSecondHand, slideMinuteHand, slideHourHand);
 }
 
 // Open Modal function
@@ -555,6 +607,7 @@ function setGameClasses() {
 function showButtons(checkedSelectStatus) {
   switch (checkedSelectStatus) {
     case "learnDesc":
+      learningMode = true;
       console.log("Time to learn");
       removeClassStatus();
       setTimeout(() => {
@@ -562,6 +615,7 @@ function showButtons(checkedSelectStatus) {
       }, 500);
       break;
     case "tutDesc":
+      learningMode = false;
       console.log("Tutorial time");
       removeClassStatus();
       setTimeout(() => {
@@ -571,6 +625,7 @@ function showButtons(checkedSelectStatus) {
       }, 500);
       break;
     case "gameDesc":
+      learningMode = false;
       console.log("Game Time");
       removeClassStatus();
       setTimeout(() => {
@@ -578,6 +633,7 @@ function showButtons(checkedSelectStatus) {
       }, 500);
       break;
     default:
+      learningMode = false;
       console.log("Something is wrong");
   }
 }
@@ -590,8 +646,9 @@ const statusSelection = () => {
   const checkedSelectStatus = document.querySelector(
     'input[name="status"]:checked'
   ).value;
-
+  console.log(checkedSelectStatus);
   showButtons(checkedSelectStatus);
+  cgptHideScoreDisplay(checkedSelectStatus);
 };
 
 openBtn.addEventListener("click", openModal);

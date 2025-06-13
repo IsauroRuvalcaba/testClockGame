@@ -1,3 +1,7 @@
+:root {
+  --max-game-width: 430px;
+}
+
 *,
 *:before,
 *:after {
@@ -37,9 +41,11 @@ body {
   grid-template-areas:
     "header"
     "clock-container"
+    "score-display"
     "input-container";
   grid-template-columns: 1fr;
-  grid-template-rows: 100px auto auto;
+  grid-template-rows: 30px auto 50px auto;
+  transition: grid-template-rows 0.5s ease-out;
   background: #eef0f5;
   overflow: hidden;
 
@@ -204,6 +210,7 @@ nav {
   gap: 5px;
 
   width: 100%;
+  max-width: var(--max-game-width);
   height: 100%;
 
   justify-items: center; /* centers elemnts inside along row or x axis*/
@@ -363,10 +370,18 @@ rt {
 #second,
 .dSecond {
   color: #fd382d;
+  /* text-shadow: 2px 2px 3px rgba(253, 56, 45, 0.5); */
+  /* transform: scale(1.1); */
+  text-shadow: "";
+  transform: scale(1);
 }
 
 .clock-container {
+  grid-area: clock-container;
+
   width: 100%;
+  max-width: var(--max-game-width);
+
   height: 100%;
   display: flex;
   justify-content: center; /* horizontal centering */
@@ -378,12 +393,35 @@ rt {
   position: relative;
 }
 
-.indicator {
-  height: auto;
+.score-display {
+  grid-area: score-display;
+  position: relative;
+
+  width: 100%;
+  max-width: var(--max-game-width);
+
+  height: 100%;
+  border: 3px dashed purple;
+  align-items: center;
+  /* to center and align child divs properly */
+  display: flex;
+  justify-content: space-between;
+
+  overflow: hidden;
+  transition: height 500ms;
 }
+body.cgpt-hide-score-display {
+  /* grid-template-areas:
+    "header"
+    "clock-container"
+    "input-container"; */
+  grid-template-rows: 30px auto 0px auto;
+}
+
 .indicator div {
   font-size: 1.1rem;
 }
+
 .backgroundRed {
   background-color: red;
   color: white;
@@ -392,23 +430,15 @@ rt {
   border-radius: 16px;
 }
 
-.score-board {
+.score {
   font-size: 1.3rem;
-  /* color: rgb(226, 226, 226); */
-  justify-items: center;
-  align-content: center;
-  /* font-weight: 600; */
-  position: absolute; /*make sure parent as relative*/
-  bottom: 0;
-  left: 0;
+
+  justify-items: center; /* aligns divs inside this horizontally center*/
+
   margin-left: 10px;
 }
 .timer {
-  position: absolute;
-  justify-items: center;
-  align-content: center;
-  bottom: 0;
-  right: 0;
+  justify-items: center; /* aligns divs inside this horizontally center*/
   font-size: 1.3rem;
   margin-right: 10px;
 }
@@ -418,7 +448,7 @@ rt {
 } */
 
 .clock {
-  grid-area: clock;
+  /* grid-area: clock; */
   background: linear-gradient(120deg, #e6e9ef, #eef0f5);
   /* width: 450px;
   height: 450px; */
