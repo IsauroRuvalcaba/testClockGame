@@ -49,7 +49,35 @@ let aClockValues = {
   second: 0,
 };
 
+const CLOCKSTATE = {
+  LEARN: "learn",
+  TUTORIAL: "tutorial",
+  GAME: "game",
+};
+
 let gameState = {
+  timer: 0,
+  timeAmount: 120,
+  get timeLeft() {
+    return this.timer;
+  },
+  timerCountDown(n = 1) {
+    this.timer -= n;
+  },
+  timerRefresh() {
+    this.timer = this.timeAmount;
+  },
+  prevClockMode: undefined,
+  updatePrevClockMode() {
+    this.prevClockMode = this.clockMode;
+  },
+  clockMode: CLOCKSTATE.GAME,
+  updateClockMode(mode) {
+    // console.log(mode);
+    if (mode === "learnDesc") this.clockMode = CLOCKSTATE.LEARN;
+    if (mode === "tutDesc") this.clockMode = CLOCKSTATE.TUTORIAL;
+    if (mode === "gameDesc") this.clockMode = CLOCKSTATE.GAME;
+  },
   score: 0,
   gameOn: false,
   scoreIncrease(n = 1) {
@@ -118,7 +146,7 @@ function idErrorBackground(unitTime) {
   setTimeout(() => {
     unitTimeElement.classList.toggle("idErrorBackground");
     // unitTime.style.backgroundColor = "#ffffff";
-  }, 500);
+  }, 1000);
 }
 
 function toggleScoreDisplay() {
@@ -132,7 +160,7 @@ function toggleScoreDisplay() {
 
 function cgptHideScoreDisplay(clockState) {
   const body = document.querySelector("body");
-  console.log(clockState);
+  // console.log(clockState);
 
   if (clockState === undefined) {
     return body.classList.toggle("cgpt-hide-score-display");
@@ -164,9 +192,12 @@ function compareObjects() {
 
 function postTimeLeft() {
   // const timerEl = document.querySelector(".time-left");
+  let timeLeft = gameState.timeLeft;
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
   timerEl.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
+  // console.log("getter: ", gameState.timeLeft);
+  // console.log(gameState.timer);
 }
 
 function flash() {
@@ -175,11 +206,11 @@ function flash() {
 
 let timeLeftCountDown;
 let flashInterval;
-let timeLeft = 12;
+// let timeLeft = 20;
 
 function countDown() {
-  // let timeLeft = 120;
-  // console.log(timeLeft);
+  let timeLeft = gameState.timeLeft;
+  // console.log("timeLeft: ", timeLeft);
 
   flashInterval = setInterval(() => {
     if (timeLeft <= 10 && timeLeft > 0) {
@@ -192,41 +223,53 @@ function countDown() {
 
   timeLeftCountDown = setInterval(() => {
     // const timerEl = document.querySelector(".time-left");
-    timeLeft -= 1;
+    //! timeLeft -= 1;
     // const mins = Math.floor(timeLeft / 60);
     // const secs = timeLeft % 60;
 
+    gameState.timerCountDown();
+    timeLeft = gameState.timeLeft;
     // timerEl.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
     postTimeLeft();
 
     if (timeLeft <= 0) {
+      // console.log("Game Over: ", timeLeft);
       clearInterval(timeLeftCountDown);
       clearInterval(flashInterval);
       btnStartGame.disabled = false;
       btnVerifyScore.disabled = true;
+      btnSpinClock.disabled = true;
     }
   }, 1000);
 }
+gameState.timerRefresh();
 postTimeLeft();
 
 const cancelTimeGame = () => {
   console.log("cancel btn pressed");
   btnStartGame.disabled = false;
   btnVerifyScore.disabled = true;
+  btnSpinClock.disabled = true;
   clearInterval(timeLeftCountDown);
   clearInterval(flashInterval);
 
-  timeLeft = 120;
+  // timeLeft = 20;
   postTimeLeft();
 };
 
 const startGame = () => {
-  console.log("start button pressed");
+  // add a time reset before countdown starts
+  // timeLeft = 20;
   gameState.gameRefresh();
+  gameState.timerRefresh();
+  postTimeLeft();
+
+  // console.log("start button pressed");
   btnStartGame.disabled = true;
-  btnStartGame.disabled
-    ? console.log("start button disabled")
-    : console.log("start button enabled");
+  btnSpinClock.disabled = false;
+  // btnStartGame.disabled
+  //   ? console.log("start button disabled")
+  //   : console.log("start button enabled");
   movehand();
   countDown();
 };
@@ -239,27 +282,54 @@ const startGame = () => {
 //   console.log("Change: ", this.value);
 // });
 
+function selectDigitalTimeUnit(timeUnit) {
+  let dTimeDivSel;
+
+  if (timeUnit === "sRange") dTimeDivSel = document.querySelector(".dSecond");
+  if (timeUnit === "mRange") dTimeDivSel = document.querySelector(".dMinute");
+  if (timeUnit === "hRange") dTimeDivSel = document.querySelector(".dHour");
+
+  // console.log(dTimeDivSel);
+  return dTimeDivSel;
+}
+
+const dTimeUnitHighlight = (timeUnit) => {
+  let dSecond = document.querySelector(".dSecond");
+
+  // dSecond.offsetHeight;
+  let dUnitTime = selectDigitalTimeUnit(timeUnit);
+  // console.log(timeUnit);
+  // console.log(dUnitTime);
+
+  // dSecond.classList.add("fishEye");
+  dUnitTime.classList.add("fishEye");
+
+  setTimeout(() => {
+    // dSecond.classList.remove("fishEye");
+    dUnitTime.classList.remove("fishEye");
+    // dSecond.offsetHeight;
+    // dUnitTime.offsetHeight;
+  }, 750);
+};
+
 // ! change this on a button
-let learningMode = false;
+// let learningMode = false;
 sliders.forEach((slider, index) => {
   // console.log(slider.querySelector(".value").innerHTML);
   // let tValue = slider.querySelector("input").dataset.time;
   // slider.querySelector(".slider").value = dClockValues[tValue];
 
-  //* when hovering and using the scroll wheel
-  // https://stackoverflow.com/questions/67651894/how-do-i-change-the-value-of-a-range-input-by-user-scroll
   let sliderScroll = slider.querySelector(".slider");
 
-  sliderScroll.addEventListener("input", function () {
-    console.log("drag: ", this.id);
-  });
+  //* when hovering and using the scroll wheel
+  // https://stackoverflow.com/questions/67651894/how-do-i-change-the-value-of-a-range-input-by-user-scroll
 
   let lastScrollTime = 0;
 
   sliderScroll.addEventListener("wheel", function (e) {
     // let event = new Event("change", { bubbles: true, cancelable: true });
     // sliderScroll.dispatchEvent(event);
-    console.log("Hover and wheel: ", this.id);
+    // console.log("Hover and wheel: ", this.id);
 
     const now = Date.now();
     const timeDiff = now - lastScrollTime;
@@ -288,7 +358,8 @@ sliders.forEach((slider, index) => {
     dClockValues[tValue] = +slider.querySelector(".slider").value;
     // console.log(tValue, +slider.querySelector(".slider").value);
 
-    if (learningMode) sliderHandMove();
+    // if (learningMode) sliderHandMove();
+    if (gameState.clockMode === "learn") sliderHandMove();
 
     dClock.innerHTML = `<span class=dHour>${
       dClockValues.hour
@@ -297,17 +368,19 @@ sliders.forEach((slider, index) => {
       .padStart(2, 0)}</span>:<span class=dSecond>${dClockValues.second
       .toString()
       .padStart(2, 0)}</span>`;
+
+    dTimeUnitHighlight(this.id);
   });
 
   // * when dragging the input button
-  slider.addEventListener("input", function () {
-    // console.log(slider.querySelector(".slider").value);
+  sliderScroll.addEventListener("input", function () {
+    // console.log("drag: ", this.id);
+
     let tValue = slider.querySelector("input").dataset.time;
     dClockValues[tValue] = +slider.querySelector(".slider").value;
-    // console.log(tValue, +slider.querySelector(".slider").value, dClockValues);
-    // console.log("sliding ", sliderHandMove());
 
-    if (learningMode) sliderHandMove();
+    // if (learningMode) sliderHandMove();
+    if (gameState.clockMode === "learn") sliderHandMove();
 
     dClock.innerHTML = `<span class=dHour>${
       dClockValues.hour
@@ -316,8 +389,21 @@ sliders.forEach((slider, index) => {
       .padStart(2, 0)}</span>:<span class=dSecond>${dClockValues.second
       .toString()
       .padStart(2, 0)}</span>`;
-    // console.log(dClock);
-    // getTime();
+
+    dTimeUnitHighlight(this.id);
+  });
+  slider.addEventListener("input", function () {
+    // let tValue = slider.querySelector("input").dataset.time;
+    // dClockValues[tValue] = +slider.querySelector(".slider").value;
+    // if (learningMode) sliderHandMove();
+    // dClock.innerHTML = `<span class=dHour>${
+    //   dClockValues.hour
+    // }</span>:<span class=dMinute>${dClockValues.minute
+    //   .toString()
+    //   .padStart(2, 0)}</span>:<span class=dSecond>${dClockValues.second
+    //   .toString()
+    //   .padStart(2, 0)}</span>`;
+    // dTimeUnitHighlight(this.id);
   });
 });
 
@@ -526,7 +612,12 @@ function movehand() {
   preMovementStyleEffect(minuteHand, currentMRotation);
   preMovementStyleEffect(secondHand, currentSRotation);
 
-  btnStartGame.disabled = true;
+  // ! Game disabled Indicator
+  if (gameState.clockMode === "gameDesc") {
+    btnStartGame.disabled = true;
+    console.log(gameState.clockMode, "btn StartGame disabled");
+  }
+
   btnVerifyScore.disabled = false;
 
   hourHand.offsetHeight; //*this is necessary. offsetHeight property - This has to do with Browser Rendering Pipeline - claude ai has a really good expanation on this.  offsetHeight is only needed on one element for Reflow and force the browser to calculate layout immediately. the below two aren't needed
@@ -538,7 +629,7 @@ function movehand() {
   initiateHandStyleEffect(secondHand, newSRotation, 3.5, 0.5);
 
   currentHRotation = (newHRotation + 1440) % 360;
-  console.log(currentHRotation);
+  // console.log(currentHRotation);
 
   currentMRotation = newMRotation % 360;
   currentSRotation = newSRotation % 360;
@@ -552,12 +643,34 @@ function movehand() {
   aClockValues.minute = newMRotation / 6;
   aClockValues.second = newSRotation / 6;
 
+  console.log(currentHRotation, currentMRotation, currentSRotation);
+  console.log(aClockValues);
+
   btnVerifyScore.disabled = true;
   setTimeout(() => {
     // hourHand.style.transition = "";
     // btnSpinClock.disabled = true;
     btnVerifyScore.disabled = false;
   }, 3000);
+}
+
+// *This resets the analog clock hands to match the digital clock time initially when changing to learning mode
+function handsMoveForLearningMode() {
+  secondHand.style.transition = "transform 1s ease-in-out";
+  minuteHand.style.transition = "transform 1s ease-in-out";
+  hourHand.style.transition = "transform 1s ease-in-out";
+
+  const slideSecondHand = dClockValues.second * 6;
+  const slideMinuteHand = dClockValues.minute * 6;
+  const slideHourHand =
+    dClockValues.hour * 30 + Math.floor((slideMinuteHand / 425) * 30);
+  // console.log(slideSecondHand, slideMinuteHand, slideHourHand);
+
+  //* made it 400 because 360 had the hour to close to following hour when minute was at 59. Could cause confusing on the little ones' learning
+  // const minuteRatioAddOn = Math.floor((slideMinuteHand / 425) * 30);
+  secondHand.style.transform = `rotate(${slideSecondHand}deg)`;
+  minuteHand.style.transform = `rotate(${slideMinuteHand}deg)`;
+  hourHand.style.transform = `rotate(${slideHourHand}deg)`;
 }
 
 // analog clock movement when sliding the input range when in learning mode
@@ -577,15 +690,31 @@ function sliderHandMove() {
   secondHand.style.transform = `rotate(${slideSecondHand}deg)`;
   minuteHand.style.transform = `rotate(${slideMinuteHand}deg)`;
   hourHand.style.transform = `rotate(${slideHourHand}deg)`;
-  // console.log(slideSecondHand, slideMinuteHand, slideHourHand);
+  console.log(slideSecondHand, slideMinuteHand, slideHourHand);
+
+  currentHRotation = slideHourHand;
+  currentMRotation = slideMinuteHand;
+  currentSRotation = slideSecondHand;
 }
 
 // Open Modal function
 function openModal() {
   //Todo: because in css oneClass.open and twoClass.open can be referenced and the classess can do different things. Just learned this
 
+  // console.log("open modal, preClockMode: ", gameState.prevClockMode);
+  gameState.updatePrevClockMode();
+
+  // console.log("open modal, clockMode: ", gameState.clockMode);
+
   modalBg.classList.add("open");
   modal.classList.add("open");
+}
+
+function setRotationStartForGameAndTut() {
+  preMovementStyleEffect(hourHand, currentHRotation);
+  preMovementStyleEffect(minuteHand, currentMRotation);
+  preMovementStyleEffect(secondHand, currentSRotation);
+  console.log(currentHRotation, currentMRotation, currentSRotation);
 }
 
 function removeClassStatus() {
@@ -602,31 +731,43 @@ function setGameClasses() {
   btnCancelGame.classList.add("appear");
   btnSpinClock.classList.add("appear");
   btnVerifyScore.classList.add("appear");
+  btnSpinClock.disabled = true;
+}
+function setTutorialClasses() {
+  btnSpinClock.classList.add("appear");
+  btnVerifyScore.classList.add("appear");
+  gradsBtn.classList.add("appear");
+  btnSpinClock.disabled = false;
 }
 
 function showButtons(checkedSelectStatus) {
   switch (checkedSelectStatus) {
     case "learnDesc":
       learningMode = true;
-      console.log("Time to learn");
+      // gameState.updateClockMode(checkedSelectStatus);
+      // console.log("Time to learn");
       removeClassStatus();
       setTimeout(() => {
         gradsBtn.classList.add("appear");
+        handsMoveForLearningMode();
       }, 500);
       break;
     case "tutDesc":
       learningMode = false;
-      console.log("Tutorial time");
+      // gameState.updateClockMode(checkedSelectStatus);
+      setRotationStartForGameAndTut();
+
+      // console.log("Tutorial time");
       removeClassStatus();
       setTimeout(() => {
-        btnSpinClock.classList.add("appear");
-        btnVerifyScore.classList.add("appear");
-        gradsBtn.classList.add("appear");
+        setTutorialClasses();
       }, 500);
       break;
     case "gameDesc":
       learningMode = false;
-      console.log("Game Time");
+      // gameState.updateClockMode(checkedSelectStatus);
+      setRotationStartForGameAndTut();
+      // console.log("Game Time");
       removeClassStatus();
       setTimeout(() => {
         setGameClasses();
@@ -634,6 +775,8 @@ function showButtons(checkedSelectStatus) {
       break;
     default:
       learningMode = false;
+      gameState.updateClockMode("gameDesc");
+
       console.log("Something is wrong");
   }
 }
@@ -646,8 +789,12 @@ const statusSelection = () => {
   const checkedSelectStatus = document.querySelector(
     'input[name="status"]:checked'
   ).value;
-  console.log(checkedSelectStatus);
-  showButtons(checkedSelectStatus);
+  // console.log(checkedSelectStatus);
+  gameState.updateClockMode(checkedSelectStatus);
+
+  if (gameState.prevClockMode != gameState.clockMode) {
+    showButtons(checkedSelectStatus);
+  }
   cgptHideScoreDisplay(checkedSelectStatus);
 };
 
@@ -668,7 +815,7 @@ function closeModal() {
 gradBtnsInput.forEach((gradBtn) => {
   gradBtn.addEventListener("change", function () {
     const checkGradBtnSelect = document.querySelector("#num-grad-btn").checked;
-    console.log(checkGradBtnSelect);
+
     toggleMinuteNumberTicks2(checkGradBtnSelect);
   });
 });
