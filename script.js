@@ -126,28 +126,46 @@ function checkValues() {
   movehand();
 }
 
-function idErrorBackground(unitTime) {
-  // const unitTimeFunc = (unitTime) => {
-  //   const selector = `.${unitTime}`;
-  //   const dElement = document.querySelector(selector); //this cant have template literals
-  //   console.log(dElement);
-  //   return dElement;
-  // };
-
+function popUpErrorTimeUnit(unitTime, unitNumber) {
   const unitTimeFunc = () => document.querySelector(`.${unitTime}`);
-
   const unitTimeElement = unitTimeFunc();
+  console.log("Wrong: ", unitNumber);
 
-  unitTimeElement.classList.toggle("idErrorBackground");
-  // unitTime.style.transition = "background-color 0.25s ease-in-out";
-  // console.log(unitTime.classList.toggle("idErrorBackground"));
-  // unitTime.style.backgroundColor = "#ffff99";
+  const newUnitNumber =
+    unitTime == "popMinute" || unitTime == "popSecond"
+      ? unitNumber.toString().padStart(2, 0)
+      : unitNumber;
+
+  unitTimeElement.textContent = newUnitNumber;
+  unitTimeElement.classList.toggle("popUp");
 
   setTimeout(() => {
-    unitTimeElement.classList.toggle("idErrorBackground");
-    // unitTime.style.backgroundColor = "#ffffff";
-  }, 1000);
+    unitTimeElement.classList.toggle("popUp");
+  }, 2000);
 }
+
+// function idErrorBackground(unitTime) {
+//   // const unitTimeFunc = (unitTime) => {
+//   //   const selector = `.${unitTime}`;
+//   //   const dElement = document.querySelector(selector); //this cant have template literals
+//   //   console.log(dElement);
+//   //   return dElement;
+//   // };
+
+//   const unitTimeFunc = () => document.querySelector(`.${unitTime}`);
+
+//   const unitTimeElement = unitTimeFunc();
+
+//   unitTimeElement.classList.toggle("idErrorBackground");
+//   // unitTime.style.transition = "background-color 0.25s ease-in-out";
+//   // console.log(unitTime.classList.toggle("idErrorBackground"));
+//   // unitTime.style.backgroundColor = "#ffff99";
+
+//   setTimeout(() => {
+//     unitTimeElement.classList.toggle("idErrorBackground");
+//     // unitTime.style.backgroundColor = "#ffffff";
+//   }, 1000);
+// }
 
 function toggleScoreDisplay() {
   // const scoreDisplayStatus = document.querySelectorAll(".indicator");
@@ -179,10 +197,13 @@ function compareObjects() {
   const Minute = dClockValues.minute - aClockValues.minute;
   const Second = dClockValues.second - aClockValues.second;
 
-  if (Hour !== 0) idErrorBackground("dHour");
-  if (Minute !== 0) idErrorBackground("dMinute");
-  if (Second !== 0) idErrorBackground("dSecond");
-  // console.log(Hour, Minute, Second);
+  // if (Hour !== 0) idErrorBackground("dHour");
+  // if (Minute !== 0) idErrorBackground("dMinute");
+  // if (Second !== 0) idErrorBackground("dSecond");
+
+  if (Hour !== 0) popUpErrorTimeUnit("popHour", aClockValues.hour);
+  if (Minute !== 0) popUpErrorTimeUnit("popMinute", aClockValues.minute);
+  if (Second !== 0) popUpErrorTimeUnit("popSecond", aClockValues.second);
 
   if (Hour === 0 && Minute === 0 && Second === 0) {
     gameState.scoreIncrease();
