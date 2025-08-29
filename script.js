@@ -29,6 +29,9 @@ const descriptionContainer = document.querySelector(".description-container"); /
 const numSwitch = document.querySelector("#num-graduation");
 const tickSwitch = document.querySelector("#tick-graduation");
 
+// * Game Analytics Modal Section
+const gameDataModal = document.querySelector(".game-analytics");
+
 // btnSpinClock.disabled = true;
 btnVerifyScore.disabled = true;
 
@@ -57,10 +60,17 @@ const CLOCKSTATE = {
 
 let gameState = {
   timer: 0,
-  timeAmount: 120,
+  timeAmount: 60,
+  playTime: 0,
+
   get timeLeft() {
     return this.timer;
   },
+  setPlayTime() {
+    // this is to set the begining time of each set in game
+    this.playTime = this.timer - 4;
+  },
+
   timerCountDown(n = 1) {
     this.timer -= n;
   },
@@ -95,6 +105,8 @@ let gameState = {
   },
 };
 
+let gameSet = [];
+
 function getTime() {
   // console.log(dClockValues);
   dClock.innerHTML = `<span class=dHour>${
@@ -120,16 +132,17 @@ let dMinute = document.querySelector(".dMinute");
 let dSecond = document.querySelector(".dSecond");
 
 function checkValues() {
-  compareObjects();
+  compareTimeObjects();
   // btnSpinClock.disabled = false;
   btnVerifyScore.disabled = true;
+  gameResults();
   movehand();
 }
 
 function popUpErrorTimeUnit(unitTime, unitNumber) {
   const unitTimeFunc = () => document.querySelector(`.${unitTime}`);
   const unitTimeElement = unitTimeFunc();
-  console.log("Wrong: ", unitNumber);
+  // console.log("Wrong: ", unitNumber);
 
   const newUnitNumber =
     unitTime == "popMinute" || unitTime == "popSecond"
@@ -192,7 +205,8 @@ function cgptHideScoreDisplay(clockState) {
   // scoreDisplayStatus.classList.toggle("hide-score-display");
 }
 
-function compareObjects() {
+let pPTTable;
+function compareTimeObjects() {
   const Hour = dClockValues.hour - aClockValues.hour;
   const Minute = dClockValues.minute - aClockValues.minute;
   const Second = dClockValues.second - aClockValues.second;
@@ -201,14 +215,130 @@ function compareObjects() {
   // if (Minute !== 0) idErrorBackground("dMinute");
   // if (Second !== 0) idErrorBackground("dSecond");
 
+  const pointsPerTry =
+    aClockValues.minute == 59
+      ? 4
+      : aClockValues.minute >= 55
+      ? 3
+      : aClockValues.minute >= 50
+      ? 2
+      : 1;
+
   if (Hour !== 0) popUpErrorTimeUnit("popHour", aClockValues.hour);
   if (Minute !== 0) popUpErrorTimeUnit("popMinute", aClockValues.minute);
   if (Second !== 0) popUpErrorTimeUnit("popSecond", aClockValues.second);
 
+  pPTTable = 0;
   if (Hour === 0 && Minute === 0 && Second === 0) {
-    gameState.scoreIncrease();
+    console.log(aClockValues.minute, " ", pointsPerTry);
+    gameState.scoreIncrease(pointsPerTry);
+    pPTTable = pointsPerTry;
     gameState.getScore();
   }
+}
+
+function gameResults() {
+  const begTime = gameState.playTime;
+  const endTime = gameState.timer;
+
+  const timeElapse = Math.max(begTime - endTime, 0);
+  gameState.setPlayTime();
+
+  const gameObject = {
+    timeElapse,
+    pPTTable,
+    aClockValues: { ...aClockValues },
+    dClockValues: { ...dClockValues },
+  };
+
+  gameSet.push(gameObject);
+}
+
+function createTableData() {
+  const tableData = document.getElementById("table-data");
+  const table = document.createElement("table");
+  const thead = document.createElement("thead");
+  const tbody = document.createElement("tbody");
+
+  // populate table header
+  const headerRow = document.createElement("tr");
+  Object.keys(gameSet[0]).forEach((key) => {
+    const th = document.createElement("th");
+
+    let columnName =
+      key === "timeElapse"
+        ? "Elapsed Time"
+        : key === "pPTTable"
+        ? "Points Per Spin"
+        : key === "aClockValues"
+        ? "Clock Value"
+        : key === "dClockValues"
+        ? "Time Given"
+        : key;
+
+    th.textContent = columnName;
+    headerRow.appendChild(th);
+  });
+  thead.appendChild(headerRow);
+
+  // populate table row data
+  gameSet.forEach((item) => {
+    console.log(item);
+    const row = document.createElement("tr");
+    Object.entries(item).forEach(([key, value]) => {
+      // item.forEach((value) => {
+      const td = document.createElement("td");
+      console.log(value);
+
+      if (isPlainObject(value) && key === "dClockValues") {
+        // difHours = item.aClockValues.hour - value.hour !== 0 ? false : true;
+        // difMinutes =
+        //   item.aClockValues.minute - value.minute !== 0 ? false : true;
+        // difSeconds =
+        //   item.aClockValues.second - value.second !== 0 ? false : true;
+        let difHours =
+          item.aClockValues.hour - value.hour !== 0
+            ? '<span class="wrong">'
+            : "<span>";
+        let difMinutes =
+          item.aClockValues.minute - value.minute !== 0
+            ? '<span class="wrong">'
+            : "<span>";
+        let difSeconds =
+          item.aClockValues.second - value.second !== 0
+            ? '<span class="wrong">'
+            : "<span>";
+        console.log({ difHours, difMinutes, difSeconds });
+        td.innerHTML = `${difHours}${
+          value.hour
+        }</span>:${difMinutes}${value.minute
+          .toString()
+          .padStart(2, 0)}</span>:${difSeconds}${value.second
+          .toString()
+          .padStart(2, 0)}</span>`;
+      } else {
+        td.textContent = isPlainObject(value)
+          ? `${value.hour}:${value.minute
+              .toString()
+              .padStart(2, 0)}:${value.second.toString().padStart(2, 0)}`
+          : value;
+      }
+
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(thead);
+  table.appendChild(tbody);
+  tableData.appendChild(table);
+
+  // gameDataModal.classList.add("open");
+
+  openGameAnalyticsModal();
+}
+function isPlainObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function postTimeLeft() {
@@ -255,11 +385,13 @@ function countDown() {
 
     if (timeLeft <= 0) {
       // console.log("Game Over: ", timeLeft);
+      console.log(JSON.stringify(gameSet));
       clearInterval(timeLeftCountDown);
       clearInterval(flashInterval);
       btnStartGame.disabled = false;
       btnVerifyScore.disabled = true;
       btnSpinClock.disabled = true;
+      createTableData();
     }
   }, 1000);
 }
@@ -267,7 +399,7 @@ gameState.timerRefresh();
 postTimeLeft();
 
 const cancelTimeGame = () => {
-  console.log("cancel btn pressed");
+  // console.log("cancel btn pressed");
   btnStartGame.disabled = false;
   btnVerifyScore.disabled = true;
   btnSpinClock.disabled = true;
@@ -281,8 +413,10 @@ const cancelTimeGame = () => {
 const startGame = () => {
   // add a time reset before countdown starts
   // timeLeft = 20;
+  gameSet = [];
   gameState.gameRefresh();
   gameState.timerRefresh();
+  gameState.setPlayTime();
   postTimeLeft();
 
   // console.log("start button pressed");
@@ -432,7 +566,7 @@ sliders.forEach((slider, index) => {
 
 const overlay = document.querySelector(".overlay");
 const overlayCloseNav = () => {
-  console.log("Clicked Overlay");
+  // console.log("Clicked Overlay");
   nav.classList.toggle("nav-active");
   overlay.classList.toggle("overlayNav");
   burger.classList.toggle("toggle");
@@ -557,8 +691,8 @@ function toggleMinuteNumberTicks2(graduationTick) {
 function toggleMinuteNumberTicks() {
   const removeMinuteElements = document.querySelectorAll(".bar-seconds span");
   for (let element of removeMinuteElements) {
-    console.log(element.style.getPropertyValue("--index"));
-    console.log(element.querySelector("p"));
+    // console.log(element.style.getPropertyValue("--index"));
+    // console.log(element.querySelector("p"));
     element.remove();
   }
   minuteNumberStatus = !minuteNumberStatus;
@@ -581,7 +715,7 @@ function toggleMinuteNumberTicks() {
   insetTickStyle.forEach((tick) => {
     tick.style.inset = minuteNumberStatus ? "30px" : "35px";
   });
-  console.log(minuteNumberStatus);
+  // console.log(minuteNumberStatus);
 }
 
 // insertAdjacentHTML(position, text) method parses the specified text as HTMLand inserts the resulting nodes into the DOM tree at a specified position.  -- afterbegin - inside element before first child
@@ -606,6 +740,7 @@ function setHandRotaion(currentHandRotation, randomHandRotaion, handStep) {
 
 function preMovementStyleEffect(hand, rotationDegrees) {
   hand.style.transition = "none"; //*this is necessary. For some reason, if this not here it moves using closest path. Could go counter clockwise and not give the 1440deg added to ration.
+
   hand.style.transform = `rotate(${rotationDegrees}deg)`;
 }
 
@@ -636,7 +771,7 @@ function movehand() {
   // ! Game disabled Indicator
   if (gameState.clockMode === "gameDesc") {
     btnStartGame.disabled = true;
-    console.log(gameState.clockMode, "btn StartGame disabled");
+    // console.log(gameState.clockMode, "btn StartGame disabled");
   }
 
   btnVerifyScore.disabled = false;
@@ -664,8 +799,8 @@ function movehand() {
   aClockValues.minute = newMRotation / 6;
   aClockValues.second = newSRotation / 6;
 
-  console.log(currentHRotation, currentMRotation, currentSRotation);
-  console.log(aClockValues);
+  // console.log(currentHRotation, currentMRotation, currentSRotation);
+  // console.log(aClockValues);
 
   btnVerifyScore.disabled = true;
   setTimeout(() => {
@@ -692,6 +827,11 @@ function handsMoveForLearningMode() {
   secondHand.style.transform = `rotate(${slideSecondHand}deg)`;
   minuteHand.style.transform = `rotate(${slideMinuteHand}deg)`;
   hourHand.style.transform = `rotate(${slideHourHand}deg)`;
+
+  // added this below so when clicking through the app modes and if no movement occurs when in learning mode then the current rotation in the object gets updated when switching to the other modes
+  currentHRotation = slideHourHand;
+  currentMRotation = slideMinuteHand;
+  currentSRotation = slideSecondHand;
 }
 
 // analog clock movement when sliding the input range when in learning mode
@@ -711,7 +851,7 @@ function sliderHandMove() {
   secondHand.style.transform = `rotate(${slideSecondHand}deg)`;
   minuteHand.style.transform = `rotate(${slideMinuteHand}deg)`;
   hourHand.style.transform = `rotate(${slideHourHand}deg)`;
-  console.log(slideSecondHand, slideMinuteHand, slideHourHand);
+  // console.log(slideSecondHand, slideMinuteHand, slideHourHand);
 
   currentHRotation = slideHourHand;
   currentMRotation = slideMinuteHand;
@@ -735,7 +875,7 @@ function setRotationStartForGameAndTut() {
   preMovementStyleEffect(hourHand, currentHRotation);
   preMovementStyleEffect(minuteHand, currentMRotation);
   preMovementStyleEffect(secondHand, currentSRotation);
-  console.log(currentHRotation, currentMRotation, currentSRotation);
+  // console.log(currentHRotation, currentMRotation, currentSRotation);
 }
 
 function removeClassStatus() {
@@ -775,7 +915,7 @@ function showButtons(checkedSelectStatus) {
       break;
     case "tutDesc":
       learningMode = false;
-      // gameState.updateClockMode(checkedSelectStatus);
+      gameState.updateClockMode(checkedSelectStatus);
       setRotationStartForGameAndTut();
 
       // console.log("Tutorial time");
@@ -786,7 +926,7 @@ function showButtons(checkedSelectStatus) {
       break;
     case "gameDesc":
       learningMode = false;
-      // gameState.updateClockMode(checkedSelectStatus);
+      gameState.updateClockMode(checkedSelectStatus);
       setRotationStartForGameAndTut();
       // console.log("Game Time");
       removeClassStatus();
@@ -821,6 +961,16 @@ const statusSelection = () => {
 
 openBtn.addEventListener("click", openModal);
 
+// Game analytics table modal functions
+function openGameAnalyticsModal() {
+  modalBg.classList.add("open");
+  gameDataModal.classList.add("open");
+}
+function closeGameAnalyticsModal() {
+  modalBg.classList.remove("open");
+  gameDataModal.classList.remove("open");
+}
+
 // Close Modal function
 function closeModal() {
   modalBg.classList.remove("open");
@@ -845,6 +995,7 @@ closeBtn.addEventListener("click", closeModal);
 
 // outside Click close
 modalBg.addEventListener("click", closeModal);
+modalBg.addEventListener("click", closeGameAnalyticsModal);
 
 radioButtonsStatus.forEach((radio) => {
   radio.addEventListener("change", () => {
@@ -890,6 +1041,7 @@ radioButtonsStatus.forEach((radio) => {
 //       });
 //     }
 //   }
+
 // });
 
 const initialActiveDescription = document.querySelector(".description.active");
@@ -919,3 +1071,50 @@ setTimeout(() => {
     });
   }
 }, 500);
+
+/*
+let person = {
+  fistName: "Steven",
+  lastName: "Hancock",
+  email: "sHancock@something.com",
+  type: {
+    type1: "admin",
+    type2: "user"
+  },
+  active: true,
+  interests: ["sking","reading","javascript"],
+  address: {
+    street:{
+    street1: "100 N. Main",
+    street2: "Apt. 5"
+  },
+  city: "Lehi",
+  zip: 10001
+}
+}
+
+const isObject = function(val) {
+  if (val === null) {
+    return false
+  }
+  return (typeof val === 'object')
+}
+
+const objProps = function(obj, origProp){
+  for (let val in obj) {
+    if (isObject(obj[val])){
+      objProps(obj[val], val)
+    }else{
+      if(Array.isArray(obj)){
+        console.log(origProp +val, obj[val])
+      }else{
+        
+      console.log(val, obj[val])
+      }
+    }
+  }
+}
+
+objProps(person)
+
+ */

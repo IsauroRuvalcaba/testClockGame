@@ -17,7 +17,7 @@
         <div class="logo">
           <h4>Esteban's Clock</h4>
         </div>
-        <button class="xperiment" onclick="handsMoveForLearningMode()">
+        <button class="xperiment" onclick="">
           <!-- <button class="xperiment" onclick="cgptHideScoreDisplay()"> -->
           <!-- <button class="xperiment" onclick="toggleScoreDisplay()"> -->
           <!-- <button class="xperiment" onclick="toggleMinuteNumberTicks2()"> -->
@@ -212,8 +212,96 @@
         </div>
       </div>
     </div>
+    <div class="game-analytics">
+      <div id="table-data"></div>
+    </div>
   </body>
 </html>
+
+<!-- https://www.geeksforgeeks.org/javascript/how-to-create-an-html-table-from-an-object-array-using-javascript/ -->
+<!-- https://www.youtube.com/watch?v=qBg8IB3u28s -->
+
+<!-- 
+
+Creating an HTML table from an array of JavaScript objects involves iterating through the array and dynamically building the table elements.
+Steps:
+Define the Data: Start with an array of objects, where each object represents a row in your table and its properties represent the columns.
+JavaScript
+
+    const data = [
+      { name: 'Alice', age: 30, city: 'New York' },
+      { name: 'Bob', age: 24, city: 'Los Angeles' },
+      { name: 'Charlie', age: 35, city: 'Chicago' }
+    ];
+Get the Table Container: Obtain a reference to the HTML element where you want to insert the table (e.g., a div).
+JavaScript
+
+    const tableContainer = document.getElementById('table-container');
+Create Table Elements:
+Create a <table> element.
+Create a <thead> for the header and a <tbody> for the body.
+Create a header row (<tr>) and populate it with <th> elements using the keys from the first object in your data array.
+JavaScript
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    // Create header row
+    const headerRow = document.createElement('tr');
+    for (const key in data[0]) {
+      const th = document.createElement('th');
+      th.textContent = key.charAt(0).toUpperCase() + key.slice(1); // Capitalize header text
+      headerRow.appendChild(th);
+    }
+    thead.appendChild(headerRow);
+Populate Table Body:
+Iterate through each object in the data array.
+For each object, create a new table row (<tr>).
+Iterate through the values of the current object and create <td> elements for each value, appending them to the row.
+JavaScript
+
+    data.forEach(item => {
+      const row = document.createElement('tr');
+      for (const key in item) {
+        const td = document.createElement('td');
+        td.textContent = item[key];
+        row.appendChild(td);
+      }
+      tbody.appendChild(row);
+    });
+Assemble and Append: Append the thead and tbody to the table, and then append the table to your tableContainer.
+JavaScript
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    tableContainer.appendChild(table);
+Example HTML Structure:
+Code
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Table</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="table-container"></div>
+
+  <script>
+    // JavaScript code from above goes here
+  </script>
+</body>
+</html>
+
+
+
 
 <!-- 
 <p class="description learn-desc" data-option="learnDesc">
