@@ -102,6 +102,10 @@ let gameState = {
   gameRefresh() {
     this.score = 0;
     this.getScore();
+
+    gameSet = [];
+    const tableData = document.getElementById("gameData");
+    if (tableData) tableData.remove();
   },
 };
 
@@ -256,7 +260,10 @@ function gameResults() {
 
 function createTableData() {
   const tableData = document.getElementById("table-data");
+
   const table = document.createElement("table");
+  table.id = "gameData";
+
   const thead = document.createElement("thead");
   const tbody = document.createElement("tbody");
 
@@ -291,11 +298,6 @@ function createTableData() {
       console.log(value);
 
       if (isPlainObject(value) && key === "dClockValues") {
-        // difHours = item.aClockValues.hour - value.hour !== 0 ? false : true;
-        // difMinutes =
-        //   item.aClockValues.minute - value.minute !== 0 ? false : true;
-        // difSeconds =
-        //   item.aClockValues.second - value.second !== 0 ? false : true;
         let difHours =
           item.aClockValues.hour - value.hour !== 0
             ? '<span class="wrong">'
@@ -308,7 +310,7 @@ function createTableData() {
           item.aClockValues.second - value.second !== 0
             ? '<span class="wrong">'
             : "<span>";
-        console.log({ difHours, difMinutes, difSeconds });
+
         td.innerHTML = `${difHours}${
           value.hour
         }</span>:${difMinutes}${value.minute
@@ -413,7 +415,7 @@ const cancelTimeGame = () => {
 const startGame = () => {
   // add a time reset before countdown starts
   // timeLeft = 20;
-  gameSet = [];
+  // gameSet = [];
   gameState.gameRefresh();
   gameState.timerRefresh();
   gameState.setPlayTime();
