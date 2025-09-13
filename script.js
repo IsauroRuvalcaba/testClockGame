@@ -62,6 +62,7 @@ let gameState = {
   timer: 0,
   timeAmount: 60,
   playTime: 0,
+  numTickStatus: false,
 
   get timeLeft() {
     return this.timer;
@@ -233,10 +234,11 @@ function compareTimeObjects() {
   if (Second !== 0) popUpErrorTimeUnit("popSecond", aClockValues.second);
 
   pPTTable = 0;
+  const numTickPoints = gameState.numTickStatus === false ? 1 : 0;
   if (Hour === 0 && Minute === 0 && Second === 0) {
-    console.log(aClockValues.minute, " ", pointsPerTry);
-    gameState.scoreIncrease(pointsPerTry);
-    pPTTable = pointsPerTry;
+    console.log(aClockValues.minute, " ", pointsPerTry + numTickPoints);
+    gameState.scoreIncrease(pointsPerTry + numTickPoints);
+    pPTTable = pointsPerTry + numTickPoints;
     gameState.getScore();
   }
 }
@@ -290,12 +292,10 @@ function createTableData() {
 
   // populate table row data
   gameSet.forEach((item) => {
-    console.log(item);
     const row = document.createElement("tr");
     Object.entries(item).forEach(([key, value]) => {
       // item.forEach((value) => {
       const td = document.createElement("td");
-      console.log(value);
 
       if (isPlainObject(value) && key === "dClockValues") {
         let difHours =
@@ -613,6 +613,7 @@ numberHours.insertAdjacentHTML("afterbegin", numberElement.join(""));
 
 // create bar seconds
 let minuteNumberStatus = false;
+// gameState.numTickStatus
 
 for (let i = 1; i <= 60; i++) {
   barElement.push(`<span style="--index:${i};"><p></p></span>`);
@@ -620,7 +621,8 @@ for (let i = 1; i <= 60; i++) {
 
 function createMinuteTicksOrNumbers() {
   for (let i = 1; i <= 60; i++) {
-    if (!minuteNumberStatus) {
+    // if (!minuteNumberStatus) {
+    if (!gameState.numTickStatus) {
       barElement.push(
         `<span style="--index:${i};"><p class="tickColor">${""}</p></span>`
       );
@@ -644,19 +646,25 @@ const numSwitchSwitcher = () => {
   const inputNumSwitch = document.querySelector("#num-grad-btn");
   const inputTickSwitch = document.querySelector("#tick-grad-btn");
 
-  numSwitch.checked = minuteNumberStatus;
-  inputNumSwitch.checked = minuteNumberStatus;
+  // numSwitch.checked = minuteNumberStatus;
+  // inputNumSwitch.checked = minuteNumberStatus;
+  numSwitch.checked = gameState.numTickStatus;
+  inputNumSwitch.checked = gameState.numTickStatus;
 
   //! this is needed to make sure the input psuedo checked class + label changes
-  tickSwitch.checked = !minuteNumberStatus;
-  inputTickSwitch.checked = !minuteNumberStatus;
+  // tickSwitch.checked = !minuteNumberStatus;
+  // inputTickSwitch.checked = !minuteNumberStatus;
+  tickSwitch.checked = !gameState.numTickStatus;
+  inputTickSwitch.checked = !gameState.numTickStatus;
 };
 
 function toggleMinuteNumberTicks2(graduationTick) {
   if (graduationTick === undefined) {
-    minuteNumberStatus = !minuteNumberStatus;
+    // minuteNumberStatus = !minuteNumberStatus;
+    gameState.numTickStatus = !gameState.numTickStatus;
   } else {
-    minuteNumberStatus = graduationTick;
+    // minuteNumberStatus = graduationTick;
+    gameState.numTickStatus = graduationTick;
   }
 
   const numTickMinuteSecond = document.querySelectorAll(".bar-seconds span");
@@ -665,14 +673,16 @@ function toggleMinuteNumberTicks2(graduationTick) {
     const tickNumber = element.style.getPropertyValue("--index");
     const pElement = element.querySelector("p");
     const tickValue = tickNumber % 5 === 0 ? "" : tickNumber;
-    pElement.textContent = minuteNumberStatus ? tickValue : "";
+    // pElement.textContent = minuteNumberStatus ? tickValue : "";
+    pElement.textContent = gameState.numTickStatus ? tickValue : "";
   }
 
   const clockMTicks = document.querySelectorAll(".bar-seconds span p");
   const insetTickStyle = document.querySelectorAll(".bar-seconds span");
 
   clockMTicks.forEach((tick, index) => {
-    if (minuteNumberStatus) {
+    // if (minuteNumberStatus) {
+    if (gameState.numTickStatus) {
       tick.classList.add("clockMNums");
     } else {
       tick.classList.remove("clockMNums");
@@ -680,7 +690,8 @@ function toggleMinuteNumberTicks2(graduationTick) {
   });
 
   insetTickStyle.forEach((tick) => {
-    tick.style.inset = minuteNumberStatus ? "30px" : "35px";
+    // tick.style.inset = minuteNumberStatus ? "30px" : "35px";
+    tick.style.inset = gameState.numTickStatus ? "30px" : "35px";
   });
 
   numSwitchSwitcher();
