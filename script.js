@@ -235,7 +235,13 @@ function compareTimeObjects() {
 
   pPTTable = 0;
   const numTickPoints = gameState.numTickStatus === false ? 1 : 0;
-  if (Hour === 0 && Minute === 0 && Second === 0) {
+  if (
+    Hour === 0 &&
+    Minute === 0 &&
+    Second === 0 &&
+    gameState.clockMode === "game"
+  ) {
+    console.log({ clockMode: gameState.clockMode });
     console.log(aClockValues.minute, " ", pointsPerTry + numTickPoints);
     gameState.scoreIncrease(pointsPerTry + numTickPoints);
     pPTTable = pointsPerTry + numTickPoints;
