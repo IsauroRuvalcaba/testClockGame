@@ -1005,8 +1005,9 @@ function closeModal() {
   modal.classList.remove("open");
 
   statusSelection();
-
+  gameState.timerRefresh();
   setTimeout(() => {
+    postTimeLeft();
     toggleMinuteNumberTicks2(numSwitch.checked);
   }, 500);
 }
