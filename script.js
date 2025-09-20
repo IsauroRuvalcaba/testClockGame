@@ -60,7 +60,7 @@ const CLOCKSTATE = {
 
 let gameState = {
   timer: 0,
-  timeAmount: 60,
+  timeAmount: 120,
   playTime: 0,
   numTickStatus: false,
 
@@ -881,6 +881,8 @@ function sliderHandMove() {
 function openModal() {
   //Todo: because in css oneClass.open and twoClass.open can be referenced and the classess can do different things. Just learned this
 
+  cancelTimeGame();
+
   // console.log("open modal, preClockMode: ", gameState.prevClockMode);
   gameState.updatePrevClockMode();
 
@@ -969,7 +971,14 @@ const statusSelection = () => {
   const checkedSelectStatus = document.querySelector(
     'input[name="status"]:checked'
   ).value;
-  // console.log(checkedSelectStatus);
+
+  let gameTimeValue = document.querySelector(
+    ' input[name="time"]:checked'
+  ).value;
+
+  gameTimeValue = gameTimeValue * 60;
+  gameState.timeAmount = gameTimeValue;
+
   gameState.updateClockMode(checkedSelectStatus);
 
   if (gameState.prevClockMode != gameState.clockMode) {

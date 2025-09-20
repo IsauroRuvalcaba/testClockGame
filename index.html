@@ -150,10 +150,12 @@
     <!-- Modal with animations - used a combination of both https://www.youtube.com/watch?v=F3ABpPwexCg https://www.youtube.com/watch?v=01tLiSAQN1U
     -->
     <div class="modal-bg"></div>
+    <!--! remove open-->
     <div class="modal">
+      <!--! remove open-->
       <div class="close-btn">X</div>
       <div class="interactive-element">
-        <!--! neumorphic radio button tutorial https://www.youtube.com/watch?v=AzeaHFQ5xsk -->
+        <!--? neumorphic radio button tutorial https://www.youtube.com/watch?v=AzeaHFQ5xsk -->
         <div class="selection-area">
           <input type="radio" name="status" id="learn" value="learnDesc" />
           <label for="learn">Learn</label>
@@ -186,6 +188,17 @@
             <p>
               Play the two minute game and see how high of a score you can get.
             </p>
+            <hr />
+            <p>Set the game time lenghth in minutes</p>
+            <div class="time-toggle">
+              <input type="radio" name="time" id="4min" value="4" />
+              <label for="4min">4 </label>
+              <input type="radio" name="time" id="3min" value="3" />
+              <label for="3min">3 </label>
+              <input type="radio" name="time" id="2min" checked value="2" />
+              <label for="2min">2 </label>
+              <div class="time-slide-toggle"></div>
+            </div>
             <hr />
             <p>Set the minute/second clock graduations to a number or tick</p>
             <!-- <div> -->
